@@ -1,6 +1,6 @@
 export const RECEIVE_QUERY = 'RECEIVE_QUERY';
 
-export const receiveQueryY = query => {
+export const receiveQuery = query => {
   return {
     type: RECEIVE_QUERY,
     query,
