@@ -3,7 +3,7 @@ let webpack = require('webpack');
 
 module.exports = {
   context: __dirname,
-  entry: './index.jsx',
+  entry: './frontend/find_bytes.jsx',
   output: {
     path: path.resolve(__dirname),
     filename: 'bundle.js',
