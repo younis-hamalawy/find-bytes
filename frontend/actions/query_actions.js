@@ -6,21 +6,20 @@ export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 
 export const receiveQuery = query => ({
   type: RECEIVE_QUERY,
-  query
+  query,
 });
 
 export const receiveErrors = errors => ({
   type: RECEIVE_ERRORS,
-  errors
+  errors,
 });
 
 export const clearErrors = () => ({
-  type: CLEAR_ERRORS
+  type: CLEAR_ERRORS,
 });
 
-export const fetchQueryResults = query => dispatch => (
-  QueryAPIUtil.fetchQueryResults(query).then(responce => (
-      dispatch(receiveQuery(responce));
-      dispatch(clearErrors())),
-    err => dispatch(receiveErrors(err)))
-);
+export const fetchQueryResults = query => dispatch =>
+  QueryAPIUtil.fetchQueryResults(query).then(
+    responce => (dispatch(receiveQuery(responce)), dispatch(clearErrors())),
+    err => dispatch(receiveErrors(err)),
+  );
