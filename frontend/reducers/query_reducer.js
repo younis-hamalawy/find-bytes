@@ -1,9 +1,7 @@
 import merge from 'lodash/merge';
 import { RECEIVE_QUERY } from '../actions/query_actions';
 
-const defaultState = {
-  query: {},
-};
+const defaultState = {};
 
 const queryReducer = (state = defaultState, action) => {
   Object.freeze(state);

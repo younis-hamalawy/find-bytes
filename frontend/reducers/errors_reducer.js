@@ -1,10 +1,7 @@
 import merge from 'lodash/merge';
 import { RECEIVE_ERRORS, CLEAR_ERRORS } from '../actions/query_actions';
 
-const defaultState = {
-  query: {},
-  errors: [],
-};
+const defaultState = {};
 
 const errorsReducer = (state = defaultState, action) => {
   Object.freeze(state);
