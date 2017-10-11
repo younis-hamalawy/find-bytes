@@ -10,6 +10,7 @@ class Main extends React.Component {
     };
 
     this.setQuery = this.setQuery.bind(this);
+    this.submitQuery = this.submitQuery.bind(this);
   }
 
   componentDidMount() {
@@ -30,6 +31,11 @@ class Main extends React.Component {
     e.preventDefault();
     const query = e.target.value ? e.target.value : '';
     this.setState({ query });
+    setTimeout(() => console.log(this.state.query), 0);
+  }
+
+  submitQuery(e) {
+    e.preventDefault();
   }
 
   render() {
