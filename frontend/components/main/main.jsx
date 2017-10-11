@@ -8,28 +8,29 @@ class Main extends React.Component {
       latitude: '',
       longitude: '',
     };
+
+    this.setQuery = this.setQuery.bind(this);
   }
 
-  // componentDidMount() {
-  //   const location = navigator.geolocation;
+  componentDidMount() {
+    const location = navigator.geolocation;
 
-  //   location.getCurrentPosition(position => {
-  //     this.setState({ latitude: position.coords.latitude });
-  //     this.setState({ longitude: position.coords.longitude });
+    location.getCurrentPosition(position => {
+      this.setState({ latitude: position.coords.latitude });
+      this.setState({ longitude: position.coords.longitude });
 
-  //     const map = new google.maps.Map(document.getElementById('map'), {
-  //       center: { lat: position.coords.latitude, lng: position.coords.longitude },
-  //       zoom: 14,
-  //     });
-  //   });
-  // }
+      const map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: position.coords.latitude, lng: position.coords.longitude },
+        zoom: 14,
+      });
+    });
+  }
 
-  // setSearch(e) {
-  //   e.preventDefault();
-  //   const search = e.target.value ? e.target.value : "";
-  //   this.setState({ search });
-  //   setTimeout(() => console.log(this.state.search), 0);
-  // }
+  setQuery(e) {
+    e.preventDefault();
+    const query = e.target.value ? e.target.value : '';
+    this.setState({ query });
+  }
 
   render() {
     return (
