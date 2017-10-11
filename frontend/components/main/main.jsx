@@ -31,7 +31,6 @@ class Main extends React.Component {
     e.preventDefault();
     const query = e.target.value ? e.target.value : '';
     this.setState({ query });
-    setTimeout(() => console.log(this.state.query), 0);
   }
 
   submitQuery(e) {
@@ -42,6 +41,13 @@ class Main extends React.Component {
     return (
       <div>
         <h1>Welcome to Find Bytes!</h1>
+        <form onSubmit={this.submitQuery}>
+          <label>
+            <input onChange={this.setQuery} type="text" value={this.state.query} />
+          </label>
+
+          <input type="submit" value="Search" />
+        </form>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Responce extends React.Component {
+class Response extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -10,4 +10,4 @@ class Responce extends React.Component {
   }
 }
 
-export default Responce;
+export default Responcs;
