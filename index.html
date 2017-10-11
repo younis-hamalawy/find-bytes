@@ -9,10 +9,36 @@
   <!-- using normalize.css instead -->
   <link rel="stylesheet" href="./stylesheets/main.css" type="text/css" />
   <script src="bundle.js"></script>
+
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+  </style>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArdEKTC3bTjB_ftKchuRJjYPf3AwPcTOU"></script>
+
 </head>
 
 <body>
   <div id='root' />
+  <div id="map"></div>
+  <!-- <script>
+    function initMap() {
+      let uluru = {
+        lat: -25.363,
+        lng: 131.044
+      };
+      let map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: uluru
+      })
+      let marker = new google.maps.Marker({
+        position: uluru,
+        map: map
+      });
+    }
+  </script> -->
 </body>
 
 </html>
