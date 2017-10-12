@@ -1,6 +1,6 @@
 jest.mock('../reducers/root_reducer', () => {
   return jest.fn((oldState, action) => ({
-    posts: { 1: { id: 1, title: "Title", body: "Body" } }
+    query: 'testQuery'
   }));
 });
 import RootReducer from '../reducers/root_reducer';
@@ -23,7 +23,7 @@ describe('Store', () => {
 
   it('the exported function should create a store when invoked', () => {
     expect(store.getState()).toEqual({
-      posts: { 1: { id: 1, title: "Title", body: "Body" }}
+      query: 'testQuery'
     });
   });
 

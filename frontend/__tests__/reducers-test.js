@@ -19,31 +19,30 @@ describe('Reducers', () => {
       const newState = queryReducer(oldState, { type: 'unmatchedtype' });
       expect(newState).toEqual(oldState);
     });
+  });
 
 
-      it('should replace the state with the action\'s query', () => {
-        const state = queryReducer(undefined, action);
-        expect(state).toEqual(testquery);
-      });
+  describe('handling the RECEIVE_QUERY action', () => {
+    let action,
+        testQuery;
 
-      it('should not modify the old state', () => {
-        let oldState = { 1: 'oldState' };
-        queryReducer(oldState, action);
-        expect(oldState).toEqual({ 1: 'oldState' });
-      });
+    beforeEach(() => {
+
+      action = {
+        type: 'RECEIVE_QUERY',
+        query: testQuery
+      };
     });
 
-    describe('handling the RECEIVE_QUERY action', () => {
-      let action,
-          testQuery;
+    it('should replace the state with the action\'s query', () => {
+      const state = queryReducer(undefined, action);
+      expect(state.query).toEqual(testQuery);
+    });
 
-      beforeEach(() => {
-        testQuery = { query: 'testQuery' };
-        action = {
-          type: 'RECEIVE_QUERY',
-          query: testQuery
-        };
-      });
+    it('should not modify the old state', () => {
+      let oldState = { 1: 'oldState' };
+      queryReducer(oldState, action);
+      expect(oldState).toEqual({ 1: 'oldState' });
     });
   });
 
@@ -66,3 +65,4 @@ describe('Reducers', () => {
       expect(testStore.getState().query).toEqual(queryReducer({ query: query }, action));
     });
   });
+});
