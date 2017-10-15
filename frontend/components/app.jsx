@@ -1,9 +1,9 @@
 import React from 'react';
-import MainContainer from './main/main_container';
+import Main from './main';
 
 const App = () => (
   <div>
-    <MainContainer />
+    <Main />
   </div>
 );
 
