@@ -1,7 +1,3 @@
-/* globals jest */
-
-jest.mock('../store/store', () => jest.fn(() => ({ storeKey: 'storeValue' }) ));
-import configureStore from '../store/store';
 import ReactDOM from 'react-dom';
 
 describe('entry', () => {
@@ -39,14 +35,5 @@ describe('entry', () => {
 
     // testing that the second arugument passed to `render` is the root div
     expect(ReactDOM.render.mock.calls[0][1]).toEqual("root");
-  });
-
-  it('invokes the configureStore function', () => {
-    expect(configureStore).toBeCalled();
-  });
-
-  it('passes the store as a prop to the Root component', () => {
-    renderedRoot = ReactDOM.render.mock.calls[0][0];
-    expect(renderedRoot.props.store).toEqual({ storeKey: 'storeValue' });
   });
 });
