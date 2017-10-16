@@ -13,11 +13,9 @@ class Main extends React.Component {
     this.setQuery = this.setQuery.bind(this);
     this.submitQuery = this.submitQuery.bind(this);
     this.createMarker = this.createMarker.bind(this);
-
-
-    google.maps.event.addListener(map,'bounds_changed', function() {
-  autocomplete.bindTo(map, 'bounds');
-});
+    // google.maps.event.addListener(map,'bounds_changed', function() {
+    //   autocomplete.bindTo(map, 'bounds');
+    // });
   }
 
   componentDidMount() {
