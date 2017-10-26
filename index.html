@@ -37,9 +37,11 @@
             lng: position.coords.longitude
           };
 
-          infoWindow.setPosition(pos);
-          infoWindow.setContent('Location found.');
-          infoWindow.open(map);
+          var marker = new google.maps.Marker({
+            map: map,
+            anchorPoint: new google.maps.Point(0, -29)
+          });
+          infoWindow.open(map, marker);
           map.setCenter(pos);
           map.setZoom(15);
         }, function () {

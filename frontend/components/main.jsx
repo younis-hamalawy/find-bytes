@@ -3,23 +3,23 @@ import React from 'react';
 class Main extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      map: '',
-      location: '',
-      latitude: '',
-      longitude: '',
-      card: '',
-      input: '',
-      strictBounds: '',
-      marker: '',
-      infowindow: '',
-      infowindowContent: '',
-      place: '',
-      MARKER_PATH: 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
-      hostnameRegexp: new RegExp('^https?://.+?/')
-    };
+    // this.state = {
+    //   map: '',
+    //   location: '',
+    //   latitude: '',
+    //   longitude: '',
+    //   card: '',
+    //   input: '',
+    //   strictBounds: '',
+    //   marker: '',
+    //   infowindow: '',
+    //   infowindowContent: '',
+    //   place: '',
+    //   MARKER_PATH: 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
+    //   hostnameRegexp: new RegExp('^https?://.+?/')
+    // };
 
-    this.setQuery = this.setQuery.bind(this);
+    // this.setQuery = this.setQuery.bind(this);
     this.submitQuery = this.submitQuery.bind(this);
     this.createMarker = this.createMarker.bind(this);
     this.onPlaceChanged = this.onPlaceChanged.bind(this);
@@ -27,21 +27,6 @@ class Main extends React.Component {
 
     //  var map, infoWindow;
   }
-
-    // getCurrentPosition = navigator.geolocation.getCurrentPosition((position) => {
-    //   this.setState(location: {lat: position.coords.latitude, lng: position.coords.longitude})
-    // });
-
-  //   componentWillMount() {
-  //   const currentLocation = navigator.geolocation;
-  //    currentLocation.getCurrentPosition((position) => {
-  //      this.state.latitude =  position.coords.latitude;
-  //      this.state.longitude = position.coords.longitude;
-  //    });
-  //    console.log(this.state)
-  // };
-
-
 
   componentDidMount() {
     // initMap();
@@ -91,7 +76,7 @@ class Main extends React.Component {
         map.fitBounds(place.geometry.viewport);
       } else {
         map.setCenter(place.geometry.location);
-        map.setZoom(17);  // Why 17? Because it looks good.
+        map.setZoom(15);  // Why 15? Because it looks good.
       }
       marker.setPosition(place.geometry.location);
       marker.setVisible(true);
@@ -118,11 +103,11 @@ class Main extends React.Component {
       });
   }
 
-  setQuery(e) {
-    e.preventDefault();
-    const query = e.currentTarget.value ? e.currentTarget.value : '';
-    this.setState({ query });
-  }
+  // setQuery(e) {
+  //   e.preventDefault();
+  //   const query = e.currentTarget.value ? e.currentTarget.value : '';
+  //   this.setState({ query });
+  // }
 
   createMarker(result, map, i) {
     // let marker = new google.maps.Marker({
