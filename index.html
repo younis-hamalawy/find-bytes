@@ -37,13 +37,15 @@
             lng: position.coords.longitude
           };
 
-          var marker = new google.maps.Marker({
-            map: map,
-            anchorPoint: new google.maps.Point(0, -29)
-          });
-          infoWindow.open(map, marker);
+          infoWindow.setPosition(pos);
+          infoWindow.setContent('You are here!');
+          infoWindow.open(map);
           map.setCenter(pos);
           map.setZoom(15);
+          var marker = new google.maps.Marker({
+            position: pos,
+            map: map
+          });
         }, function () {
           handleLocationError(true, infoWindow, map.getCenter());
         });

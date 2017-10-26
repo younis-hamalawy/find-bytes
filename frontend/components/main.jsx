@@ -66,7 +66,7 @@ class Main extends React.Component {
         map.fitBounds(place.geometry.viewport);
       } else {
         map.setCenter(place.geometry.location);
-        map.setZoom(15);  // Why 15? Because it looks good.
+        map.setZoom(13);  // Why 15? Because it looks good.
       }
       marker.setPosition(place.geometry.location);
       marker.setVisible(true);
