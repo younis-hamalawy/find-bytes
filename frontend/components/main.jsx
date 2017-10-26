@@ -3,44 +3,33 @@ import React from 'react';
 class Main extends React.Component {
   constructor(props) {
     super(props);
-    // this.state = {
-    //   map: '',
-    //   location: '',
-    //   latitude: '',
-    //   longitude: '',
-    //   card: '',
-    //   input: '',
-    //   strictBounds: '',
-    //   marker: '',
-    //   infowindow: '',
-    //   infowindowContent: '',
-    //   place: '',
-    //   MARKER_PATH: 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
-    //   hostnameRegexp: new RegExp('^https?://.+?/')
-    // };
+    this.state = {
+      map: '',
+      location: '',
+      latitude: '',
+      longitude: '',
+      card: '',
+      input: '',
+      strictBounds: '',
+      marker: '',
+      infowindow: '',
+      infowindowContent: '',
+      place: '',
+      MARKER_PATH: 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
+      hostnameRegexp: new RegExp('^https?://.+?/')
+    };
 
-    // this.setQuery = this.setQuery.bind(this);
+    this.setQuery = this.setQuery.bind(this);
     this.submitQuery = this.submitQuery.bind(this);
     this.createMarker = this.createMarker.bind(this);
     this.onPlaceChanged = this.onPlaceChanged.bind(this);
-    // this.getCurrentPosition = this.getCurrentPosition.bind(this);
-
-    //  var map, infoWindow;
   }
 
   componentDidMount() {
-    // initMap();
-    console.log(this.state)
-    // var map = new google.maps.Map(document.getElementById('map'), {
-    //   center: {lat: -34.397, lng: 150.644},
-    //   zoom: 15
-    // });
     var card = document.getElementById('pac-card');
     var input = document.getElementById('pac-input');
     var types = document.getElementById('type-selector');
     var strictBounds = document.getElementById('strict-bounds-selector');
-
-    console.log(map);
 
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
 
@@ -67,7 +56,8 @@ class Main extends React.Component {
       if (!place.geometry) {
         // User entered the name of a Place that was not suggested and
         // pressed the Enter key, or the Place Details request failed.
-        window.alert("No details available for input: '" + place.name + "'");
+        // window.alert("No details available for input: '" + place.name + "'");
+        this.submitQuery(input)
         return;
       }
 
@@ -103,11 +93,11 @@ class Main extends React.Component {
       });
   }
 
-  // setQuery(e) {
-  //   e.preventDefault();
-  //   const query = e.currentTarget.value ? e.currentTarget.value : '';
-  //   this.setState({ query });
-  // }
+  setQuery(e) {
+    e.preventDefault();
+    const query = e.currentTarget.value ? e.currentTarget.value : '';
+    this.setState({ query });
+  }
 
   createMarker(result, map, i) {
     // let marker = new google.maps.Marker({
