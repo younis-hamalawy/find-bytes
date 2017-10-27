@@ -195,12 +195,7 @@ class Main extends React.Component {
   render() {
     return (
       <div>
-        <div id="listing">
-          <table id="resultsTable">
-            <tbody id="results"></tbody>
-          </table>
-        </div>
-         <div className="pac-card" id="pac-card">
+        <div className="pac-card" id="pac-card">
           <div>
             <div id="title">
               Welcome to Find Bytes!
@@ -212,6 +207,11 @@ class Main extends React.Component {
           </div>
           <div id="pac-container">
             <input id="pac-input" type="text" placeholder="Enter a location" />
+          </div>
+          <div id="listing">
+            <table id="resultsTable">
+              <tbody id="results"></tbody>
+            </table>
           </div>
         </div>
         <div id="infowindow-content">

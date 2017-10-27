@@ -81,3 +81,15 @@ body {
   font-weight: 500;
   padding: 6px 12px;
 }
+
+#listing {
+  /* position: absolute; */
+  /* width: 200px; */
+  height: auto;
+  max-height: 200px;
+  overflow: auto;
+  /* left: 442px; */
+  top: 0px;
+  cursor: pointer;
+  overflow-x: hidden;
+}
