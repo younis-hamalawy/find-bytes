@@ -100,6 +100,8 @@ class Main extends React.Component {
 
       // If the place has a geometry, then present it on a map.
       if (place.geometry.viewport) {
+        that.clearResults();
+        that.clearMarkers();
         map.fitBounds(place.geometry.viewport);
       } else {
         map.setCenter(place.geometry.location);
@@ -148,10 +150,16 @@ class Main extends React.Component {
     this.state.markers = [];
   }
 
+  clearResults() {
+    var results = document.getElementById('results');
+    while (results.childNodes[0]) {
+      results.removeChild(results.childNodes[0]);
+    }
+  }
 
 
   addResult(result, i) {
-    console.log("XXXX")
+    // console.log("XXXX")
     var results = document.getElementById('results');
     var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
     var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
@@ -177,12 +185,6 @@ class Main extends React.Component {
     results.appendChild(tr);
   }
 
-  clearResults() {
-    var results = document.getElementById('results');
-    while (results.childNodes[0]) {
-      results.removeChild(results.childNodes[0]);
-    }
-  }
 
   // Get the place details for a hotel. Show the information in an info window,
   // anchored on the marker for the hotel that the user selected.
@@ -204,6 +206,7 @@ class Main extends React.Component {
 
   // Load the place information into the HTML elements used by the info window.
   buildIWContent(place) {
+    console.log(place.name)
     document.getElementById('iw-icon').innerHTML = '<img class="hotelIcon" ' +
       'src="' + place.icon + '"/>';
     document.getElementById('iw-url').innerHTML = '<b><a href="' + place.url +
@@ -213,7 +216,7 @@ class Main extends React.Component {
     if (place.formatted_phone_number) {
       document.getElementById('iw-phone-row').style.display = '';
       document.getElementById('iw-phone').textContent =
-        place.formatted_phone_number;
+        "place.formatted_phone_number";
     } else {
       document.getElementById('iw-phone-row').style.display = 'none';
     }
