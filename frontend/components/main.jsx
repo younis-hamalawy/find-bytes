@@ -20,9 +20,10 @@ class Main extends React.Component {
     };
 
     this.setQuery = this.setQuery.bind(this);
-    this.submitQuery = this.submitQuery.bind(this);
+    // this.submitQuery = this.submitQuery.bind(this);
     this.createMarker = this.createMarker.bind(this);
     this.onPlaceChanged = this.onPlaceChanged.bind(this);
+    // this.callback = this.callback.bind(this);
   }
 
   componentDidMount() {
@@ -48,16 +49,40 @@ class Main extends React.Component {
       map: map,
       anchorPoint: new google.maps.Point(0, -29)
     });
+        let that = this;
 
     autocomplete.addListener('place_changed', function() {
+
       infowindow.close();
       marker.setVisible(false);
       var place = autocomplete.getPlace();
       if (!place.geometry) {
+
         // User entered the name of a Place that was not suggested and
         // pressed the Enter key, or the Place Details request failed.
         // window.alert("No details available for input: '" + place.name + "'");
-        this.submitQuery(input)
+        // this.submitQuery(input)
+        var request = {
+          location: map.center,
+          radius: '500',
+          query: input.value,
+          keyword: input.value,
+          // type: ['restaurant']
+          bounds: map.getBounds()
+        };
+        var service = new google.maps.places.PlacesService(map);
+        service.nearbySearch(request, callback);
+        let then = that;
+
+        function callback(results, status) {
+
+          if (status == google.maps.places.PlacesServiceStatus.OK) {
+            for (let i = 0; i < results.length; i++) {
+              let place = results[i];
+              then.createMarker(results[i], map, i);
+            }
+          }
+        }
         return;
       }
 
@@ -66,7 +91,7 @@ class Main extends React.Component {
         map.fitBounds(place.geometry.viewport);
       } else {
         map.setCenter(place.geometry.location);
-        map.setZoom(13);  // Why 15? Because it looks good.
+        map.setZoom(15);  // Why 15? Because it looks good.
       }
       marker.setPosition(place.geometry.location);
       marker.setVisible(true);
@@ -130,51 +155,29 @@ class Main extends React.Component {
     // setTimeout(dropMarker(i), i * 100);
     this.addResult(result, i);
   }
+  addResult(result, i) {
+    var results = document.getElementById('results');
+    var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
+    var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
 
-  submitQuery(e) {
-    e.preventDefault();
-    var map;
-    var service;
-    var infowindow;
-    let that = this;
-    initialize();
-    function initialize() {
-      var pyrmont = new google.maps.LatLng(that.state.latitude,that.state.longitude);
+    var tr = document.createElement('tr');
+    tr.style.backgroundColor = (i % 2 === 0 ? '#F0F0F0' : '#FFFFFF');
+    tr.onclick = function() {
+      google.maps.event.trigger(markers[i], 'click');
+    };
 
-      map = new google.maps.Map(document.getElementById('map'), {
-          center: pyrmont,
-          zoom: 15
-        });
-
-      var request = {
-        location: pyrmont,
-        radius: '500',
-        query: that.state.query,
-        keyword: that.state.query,
-        // type: ['restaurant']
-        bounds: map.getBounds()
-      };
-
-      let autocomplete = new google.maps.places.Autocomplete(
-        /** @type {!HTMLInputElement} */ (
-          document.getElementById('autocomplete')), {
-            types: ['(establishment)']
-          });
-
-      autocomplete.addListener('place_changed', that.onPlaceChanged);
-
-        service = new google.maps.places.PlacesService(map);
-        service.nearbySearch(request, callback);
-      }
-
-    function callback(results, status) {
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        for (let i = 0; i < results.length; i++) {
-          let place = results[i];
-          that.createMarker(results[i], map, i);
-        }
-      }
-    }
+    var iconTd = document.createElement('td');
+    var nameTd = document.createElement('td');
+    var icon = document.createElement('img');
+    icon.src = markerIcon;
+    icon.setAttribute('class', 'placeIcon');
+    icon.setAttribute('className', 'placeIcon');
+    var name = document.createTextNode(result.name);
+    iconTd.appendChild(icon);
+    nameTd.appendChild(name);
+    tr.appendChild(iconTd);
+    tr.appendChild(nameTd);
+    results.appendChild(tr);
   }
 
   onPlaceChanged() {
@@ -192,6 +195,11 @@ class Main extends React.Component {
   render() {
     return (
       <div>
+        <div id="listing">
+          <table id="resultsTable">
+            <tbody id="results"></tbody>
+          </table>
+        </div>
          <div className="pac-card" id="pac-card">
           <div>
             <div id="title">
@@ -199,7 +207,7 @@ class Main extends React.Component {
             </div>
             <div id="strict-bounds-selector" className="pac-controls">
               <input type="checkbox" id="use-strict-bounds" defaultValue />
-              <label htmlFor="use-strict-bounds">Strict Bounds</label>
+              <label htmlFor="use-strict-bounds">Search within window</label>
             </div>
           </div>
           <div id="pac-container">
