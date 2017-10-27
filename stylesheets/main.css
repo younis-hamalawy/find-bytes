@@ -93,3 +93,7 @@ body {
   cursor: pointer;
   overflow-x: hidden;
 }
+
+#info {
+  display: none;
+}
