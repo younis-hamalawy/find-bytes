@@ -8,7 +8,7 @@ class Main extends React.Component {
       location: '',
       latitude: '',
       longitude: '',
-      card: '',
+      markers: [],
       input: '',
       strictBounds: '',
       marker: '',
@@ -19,11 +19,9 @@ class Main extends React.Component {
       hostnameRegexp: new RegExp('^https?://.+?/')
     };
 
-    this.setQuery = this.setQuery.bind(this);
-    // this.submitQuery = this.submitQuery.bind(this);
-    this.createMarker = this.createMarker.bind(this);
-    this.onPlaceChanged = this.onPlaceChanged.bind(this);
-    // this.callback = this.callback.bind(this);
+    this.addResult = this.addResult.bind(this);
+    this.dropMarker = this.dropMarker.bind(this);
+    this.clearMarkers = this.clearMarkers.bind(this);
   }
 
   componentDidMount() {
@@ -75,14 +73,27 @@ class Main extends React.Component {
         let then = that;
 
         function callback(results, status) {
-
           if (status == google.maps.places.PlacesServiceStatus.OK) {
-            for (let i = 0; i < results.length; i++) {
-              let place = results[i];
-              then.createMarker(results[i], map, i);
+            // Create a marker for each hotel found, and
+            // assign a letter of the alphabetic to each marker icon.
+            for (var i = 0; i < results.length; i++) {
+              var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
+              var markerIcon = then.state.MARKER_PATH + markerLetter + '.png';
+              // Use marker animation to drop the icons incrementally on the map.
+              then.state.markers[i] = new google.maps.Marker({
+                position: results[i].geometry.location,
+                animation: google.maps.Animation.DROP,
+                icon: markerIcon
+              });
+              // If the user clicks a hotel marker, show the details of that hotel
+              // in an info window.
+              then.state.markers[i].placeResult = results[i];
+              google.maps.event.addListener(then.state.markers[i], 'click', then.showInfoWindow);
+              setTimeout(then.dropMarker(i), i * 100);
+              then.addResult(results[i], i);
             }
           }
-        }
+        };
         return;
       }
 
@@ -118,52 +129,35 @@ class Main extends React.Component {
       });
   }
 
-  setQuery(e) {
-    e.preventDefault();
-    const query = e.currentTarget.value ? e.currentTarget.value : '';
-    this.setState({ query });
+ dropMarker(i) {
+   let that = this;
+    return function() {
+      that.state.markers[i].setMap(map);
+    };
   }
 
-  createMarker(result, map, i) {
-    // let marker = new google.maps.Marker({
-    //   position: result.geometry.location,
-    //   // label: {
-    //   //   color: "black",
-    //   //   fontFamily: "Helvetica",
-    //   //   text: "$"+Stbodying(home.price),
-    //   //   fontSize: "15px",
-    //   //   fontWeight: "600"
-    //   // },
-    //   anchor: new google.maps.Point(500, 10),
-    //   // icon: {url: image, origin: new google.maps.Point(0,-3)},
-    //   animation: google.maps.Animation.DROP,
-    //   map: map
-    // });
-    var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
-    var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
-    // Use marker animation to drop the icons incrementally on the map.
-    let marker = new google.maps.Marker({
-      position: result.geometry.location,
-      animation: google.maps.Animation.DROP,
-      icon: markerIcon,
-      map: map
-    });
-    // If the user clicks a hotel marker, show the details of that hotel
-    // in an info window.
-    marker.placeResult = this.state.result;
-    google.maps.event.addListener(marker, 'click', this.showInfoWindow);
-    // setTimeout(dropMarker(i), i * 100);
-    this.addResult(result, i);
+  clearMarkers() {
+    for (var i = 0; i < markers.length; i++) {
+      if (markers[i]) {
+        this.state.markers[i].setMap(null);
+      }
+    }
+    this.state.markers = [];
   }
+
+
+
   addResult(result, i) {
+    console.log("XXXX")
     var results = document.getElementById('results');
     var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
     var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
 
     var tr = document.createElement('tr');
     tr.style.backgroundColor = (i % 2 === 0 ? '#F0F0F0' : '#FFFFFF');
+    let that = this;
     tr.onclick = function() {
-      google.maps.event.trigger(markers[i], 'click');
+      google.maps.event.trigger(that.state.marker, 'click');
     };
 
     var iconTd = document.createElement('td');
@@ -180,16 +174,16 @@ class Main extends React.Component {
     results.appendChild(tr);
   }
 
-  onPlaceChanged() {
-    let place = autocomplete.getPlace();
-    if (place.geometry) {
-      map.panTo(place.geometry.location);
-      map.setZoom(15);
-      search();
-    } else {
-      document.getElementById('autocomplete').placeholder = '';
-    };
-  }
+  // onPlaceChanged() {
+  //   let place = autocomplete.getPlace();
+  //   if (place.geometry) {
+  //     map.panTo(place.geometry.location);
+  //     map.setZoom(15);
+  //     search();
+  //   } else {
+  //     document.getElementById('autocomplete').placeholder = '';
+  //   };
+  // }
 
 
   render() {
