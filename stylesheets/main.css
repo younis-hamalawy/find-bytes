@@ -20,15 +20,15 @@ body {
   font-weight: 300;
 }
 
-#infowindow-content .title {
+#infocontent .title {
   font-weight: bold;
 }
 
-#infowindow-content {
+#infocontent {
   display: none;
 }
 
-#map #infowindow-content {
+#map #infocontent {
   display: inline;
 }
 

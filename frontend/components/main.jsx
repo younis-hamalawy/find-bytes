@@ -46,9 +46,9 @@ class Main extends React.Component {
       map: map,
       anchorPoint: new google.maps.Point(0, -29)
     });
-        let that = this;
+    let that = this;
 
-    autocomplete.addListener('place_changed', function() {
+    autocomplete.addListener('place_changed', function () {
 
       infowindow.close();
       marker.setVisible(false);
@@ -103,7 +103,7 @@ class Main extends React.Component {
         map.fitBounds(place.geometry.viewport);
       } else {
         map.setCenter(place.geometry.location);
-        map.setZoom(15);  // Why 15? Because it looks good.
+        map.setZoom(15); // Why 15? Because it looks good.
       }
       marker.setPosition(place.geometry.location);
       marker.setVisible(true);
@@ -124,15 +124,17 @@ class Main extends React.Component {
     });
 
     document.getElementById('use-strict-bounds')
-      .addEventListener('click', function() {
+      .addEventListener('click', function () {
         console.log('Checkbox clicked! New state=' + this.checked);
-        autocomplete.setOptions({strictBounds: this.checked});
+        autocomplete.setOptions({
+          strictBounds: this.checked
+        });
       });
   }
 
- dropMarker(i) {
-   let that = this;
-    return function() {
+  dropMarker(i) {
+    let that = this;
+    return function () {
       that.state.markers[i].setMap(map);
     };
   }
@@ -157,7 +159,7 @@ class Main extends React.Component {
     var tr = document.createElement('tr');
     tr.style.backgroundColor = (i % 2 === 0 ? '#F0F0F0' : '#FFFFFF');
     let that = this;
-    tr.onclick = function() {
+    tr.onclick = function () {
       google.maps.event.trigger(that.state.marker, 'click');
     };
 
@@ -187,11 +189,14 @@ class Main extends React.Component {
   showInfoWindow(i) {
     var then = this;
     // console.log(marker.service.getDetails)
-    this.service.getDetails({placeId: this.state.markers[i].placeResult.place_id},
-      function(place, status) {
+    this.service.getDetails({
+        placeId: this.state.markers[i].placeResult.place_id
+      },
+      function (place, status) {
         if (status !== google.maps.places.PlacesServiceStatus.OK) {
           return;
         }
+        let infoWindow = new google.maps.InfoWindow;
         infoWindow.open(map, then.state.markers[i]);
         then.buildIWContent(place);
       });
@@ -200,15 +205,15 @@ class Main extends React.Component {
   // Load the place information into the HTML elements used by the info window.
   buildIWContent(place) {
     document.getElementById('iw-icon').innerHTML = '<img class="hotelIcon" ' +
-        'src="' + place.icon + '"/>';
+      'src="' + place.icon + '"/>';
     document.getElementById('iw-url').innerHTML = '<b><a href="' + place.url +
-        '">' + place.name + '</a></b>';
+      '">' + place.name + '</a></b>';
     document.getElementById('iw-address').textContent = place.vicinity;
 
     if (place.formatted_phone_number) {
       document.getElementById('iw-phone-row').style.display = '';
       document.getElementById('iw-phone').textContent =
-          place.formatted_phone_number;
+        place.formatted_phone_number;
     } else {
       document.getElementById('iw-phone-row').style.display = 'none';
     }
@@ -224,8 +229,8 @@ class Main extends React.Component {
         } else {
           ratingHtml += '&#10029;';
         }
-      document.getElementById('iw-rating-row').style.display = '';
-      document.getElementById('iw-rating').innerHTML = ratingHtml;
+        document.getElementById('iw-rating-row').style.display = '';
+        document.getElementById('iw-rating').innerHTML = ratingHtml;
       }
     } else {
       document.getElementById('iw-rating-row').style.display = 'none';
@@ -257,7 +262,6 @@ class Main extends React.Component {
   //     document.getElementById('autocomplete').placeholder = '';
   //   };
   // }
-
 
   render() {
     return (
