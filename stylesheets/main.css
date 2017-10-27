@@ -24,11 +24,11 @@ body {
   font-weight: bold;
 }
 
-#infocontent {
+#infoContent {
   display: none;
 }
 
-#map #infocontent {
+#map #infoContent {
   display: inline;
 }
 

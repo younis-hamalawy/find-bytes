@@ -40,8 +40,8 @@ class Main extends React.Component {
 
     var infowindow = new google.maps.InfoWindow();
 
-    var infowindowContent = document.getElementById('infowindow-content');
-    infowindow.setContent(infowindowContent);
+    var infoContent = document.getElementById('infoContent');
+    infowindow.setContent(infoContent);
     var marker = new google.maps.Marker({
       map: map,
       anchorPoint: new google.maps.Point(0, -29)
@@ -117,9 +117,9 @@ class Main extends React.Component {
         ].join(' ');
       }
 
-      infowindowContent.children['place-icon'].src = place.icon;
-      infowindowContent.children['place-name'].textContent = place.name;
-      infowindowContent.children['place-address'].textContent = address;
+      infoContent.children['place-icon'].src = place.icon;
+      infoContent.children['place-name'].textContent = place.name;
+      infoContent.children['place-address'].textContent = address;
       infowindow.open(map, marker);
     });
 
@@ -285,7 +285,7 @@ class Main extends React.Component {
             </table>
           </div>
         </div>
-        <div id="infocontent">
+        <div id="infoContent">
           <img src="" width={16} height={16} id="place-icon" />
           <span id="place-name" className="title" /><br />
           <span id="place-address" />
