@@ -89,7 +89,8 @@ class Main extends React.Component {
               // If the user clicks a hotel marker, show the details of that hotel
               // in an info window.
               then.state.markers[i].placeResult = results[i];
-              // google.maps.event.addListener(then.state.markers[i], 'click', then.showInfoWindow(i));
+              google.maps.event.addListener(then.state.markers[i], 'click');
+              // then.showInfoWindow(i));
               setTimeout(then.dropMarker(i), i * 100);
               then.addResult(results[i], i);
             }
@@ -159,22 +160,35 @@ class Main extends React.Component {
 
 
   addResult(result, i) {
-     var results = document.getElementById('results');
+    var results = document.getElementById('results');
     var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
     var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
-
+    // navigator.geolocation.getCurrentPosition(function (position) {
+    //       let pos = {
+    //         lat: position.coords.latitude,
+    //         lng: position.coords.longitude
+    //       };
+    //       console.log(pos);
+    //     });
     var tr = document.createElement('tr');
     tr.style.backgroundColor = (i % 2 === 0 ? '#F0F0F0' : '#FFFFFF');
     let that = this;
-    tr.onclick = function () {
-      google.maps.event.trigger(that.state.marker, 'click');
-    };
+    // tr.onclick = function () {
+    //   console.log('click')
+    //   google.maps.event.trigger(that.state.markers[i], 'click');
+    // };
+
+    this.state.markers[i].addListener('click', function() {
+    google.maps.event.trigger(that.state.markers[i], 'click')
+    });
 
     var iconTd = document.createElement('td');
     var nameTd = document.createElement('td');
     var icon = document.createElement('img');
     var addressTd = document.createElement('td');
     var ratingTd = document.createElement('td');
+    var distanceTd = document.createElement('td');
+    var distance = document.createTextNode((google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(pos), new google.maps.LatLng(result.geometry.location.lat(), result.geometry.location.lng())) /1600.09344).toFixed(1));
     icon.src = markerIcon;
     icon.setAttribute('class', 'placeIcon');
     icon.setAttribute('className', 'placeIcon');
@@ -187,10 +201,12 @@ class Main extends React.Component {
     nameTd.appendChild(name);
     addressTd.appendChild(address);
     ratingTd.setAttribute('id', `iw-rating${i}`)
+    distanceTd.appendChild(distance);
     tr.appendChild(iconTd);
     tr.appendChild(nameTd);
     tr.appendChild(addressTd);
     tr.appendChild(ratingTd);
+    tr.appendChild(distanceTd);
     results.appendChild(tr);
     if (result.rating) {
       var ratingHtml = '';
