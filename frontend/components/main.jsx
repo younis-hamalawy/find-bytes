@@ -39,7 +39,7 @@ class Main extends React.Component {
     autocomplete.bindTo('bounds', map);
 
     var infowindow = new google.maps.InfoWindow();
-
+    // this.state.infowindow = infowindow;
     var infoContent = document.getElementById('infoContent');
     infowindow.setContent(infoContent);
     var marker = new google.maps.Marker({
@@ -89,7 +89,7 @@ class Main extends React.Component {
               // If the user clicks a hotel marker, show the details of that hotel
               // in an info window.
               then.state.markers[i].placeResult = results[i];
-              google.maps.event.addListener(then.state.markers[i], 'click', then.showInfoWindow(i));
+              // google.maps.event.addListener(then.state.markers[i], 'click', then.showInfoWindow(i));
               setTimeout(then.dropMarker(i), i * 100);
               then.addResult(results[i], i);
             }
@@ -159,8 +159,7 @@ class Main extends React.Component {
 
 
   addResult(result, i) {
-    // console.log("XXXX")
-    var results = document.getElementById('results');
+     var results = document.getElementById('results');
     var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
     var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
 
@@ -174,34 +173,74 @@ class Main extends React.Component {
     var iconTd = document.createElement('td');
     var nameTd = document.createElement('td');
     var icon = document.createElement('img');
+    var addressTd = document.createElement('td');
+    var ratingTd = document.createElement('td');
     icon.src = markerIcon;
     icon.setAttribute('class', 'placeIcon');
     icon.setAttribute('className', 'placeIcon');
     var name = document.createTextNode(result.name);
+    var address = '';
+          if (result.vicinity) {
+            address = document.createTextNode(result.vicinity.split(',')[0]);
+          };
     iconTd.appendChild(icon);
     nameTd.appendChild(name);
+    addressTd.appendChild(address);
+    ratingTd.setAttribute('id', `iw-rating${i}`)
     tr.appendChild(iconTd);
     tr.appendChild(nameTd);
+    tr.appendChild(addressTd);
+    tr.appendChild(ratingTd);
     results.appendChild(tr);
+    if (result.rating) {
+      var ratingHtml = '';
+      for (var j = 0; j < 5; j++) {
+        if (result.rating < (j + 0.5)) {
+          ratingHtml += '&#10025;';
+        } else {
+          ratingHtml += '&#10029;';
+        }
+        document.getElementById(`iw-rating${i}`).innerHTML = ratingHtml;
+      }
+    }
   }
 
 
   // Get the place details for a hotel. Show the information in an info window,
   // anchored on the marker for the hotel that the user selected.
   showInfoWindow(i) {
-    var then = this;
-    // console.log(marker.service.getDetails)
-    this.service.getDetails({
-        placeId: this.state.markers[i].placeResult.place_id
-      },
-      function (place, status) {
-        if (status !== google.maps.places.PlacesServiceStatus.OK) {
-          return;
-        }
-        let infoWindow = new google.maps.InfoWindow;
-        infoWindow.open(map, then.state.markers[i]);
-        then.buildIWContent(place);
-      });
+    // var then = this;
+    // // console.log(marker.service.getDetails)
+    // this.service.getDetails({
+    //     placeId: this.state.markers[i].placeResult.place_id
+    //   },
+    //   function (place, status) {
+    //     if (status !== google.maps.places.PlacesServiceStatus.OK) {
+    //       return;
+    //     }
+    //     let infoWindow = new google.maps.InfoWindow;
+    //     infoWindow.open(map, then.state.markers[i]);
+    //     then.buildIWContent(place);
+    //   });
+    // var infowindow = this.state.infowindow;
+
+    var infoWindow = new google.maps.InfoWindow();
+    var infoCont = document.getElementById('info-content');
+    infoWindow.setContent(infoCont);
+      var address = '';
+      var place = this.state.markers[i].placeResult;
+      console.log(place)
+      // if (place) {
+      //   address = [
+      //     (place.vicinity || '')
+      //   ].join(' ');
+      // }
+
+      infoCont.children['place-icon'].src = place.icon;
+      infoCont.children['place-name'].textContent = place.name;
+      infoCont.children['place-address'].textContent = address;
+      infoWindow.open(map, this.state.markers[i]);
+
   }
 
   // Load the place information into the HTML elements used by the info window.
@@ -295,28 +334,9 @@ class Main extends React.Component {
         </div>
         <div id="info">
           <div id="info-content">
-            <table>
-              <tr id="iw-url-row" className="iw_table_row">
-                <td id="iw-icon" className="iw_table_icon"></td>
-                <td id="iw-url"></td>
-              </tr>
-              <tr id="iw-address-row" className="iw_table_row">
-                <td className="iw_attribute_name">Address:</td>
-                <td id="iw-address"></td>
-              </tr>
-              <tr id="iw-phone-row" className="iw_table_row">
-                <td className="iw_attribute_name">Telephone:</td>
-                <td id="iw-phone"></td>
-              </tr>
-              <tr id="iw-rating-row" className="iw_table_row">
-                <td className="iw_attribute_name">Rating:</td>
-                <td id="iw-rating"></td>
-              </tr>
-              <tr id="iw-website-row" className="iw_table_row">
-                <td className="iw_attribute_name">Website:</td>
-                <td id="iw-website"></td>
-              </tr>
-            </table>
+            <img src="" width={16} height={16} id="place-icon" />
+            <span id="place-name" className="title" /><br />
+            <span id="place-address" />
           </div>
         </div>
       </div>
