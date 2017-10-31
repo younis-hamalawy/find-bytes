@@ -28,6 +28,7 @@
         zoom: 3
       });
       initialInfoWindow = new google.maps.InfoWindow;
+      infoWindow = new google.maps.InfoWindow;
 
       // Try HTML5 geolocation.
       if (navigator.geolocation) {
@@ -46,12 +47,12 @@
           //   position: pos,
           //   map: map
           // });
-        }, function () {
-          handleLocationError(true, initialInfoWindow, map.getCenter());
+          // }, function () {
+          // handleLocationError(true, initialInfoWindow, map.getCenter());
         });
-      } else {
+        // } else {
         // Browser doesn't support Geolocation
-        handleLocationError(false, initialInfoWindow, map.getCenter());
+        // handleLocationError(false, initialInfoWindow, map.getCenter());
       }
     }
 

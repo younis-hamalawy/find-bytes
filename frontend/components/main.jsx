@@ -26,7 +26,7 @@ class Main extends React.Component {
   componentDidMount() {
     var card = document.getElementById('pac-card');
     var input = document.getElementById('pac-input');
-    var types = document.getElementById('type-selector');
+    // var types = document.getElementById('type-selector');
     var strictBounds = document.getElementById('strict-bounds-selector');
 
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
@@ -36,7 +36,9 @@ class Main extends React.Component {
     // Bind the map's bounds (viewport) property to the autocomplete object,
     // so that the autocomplete requests use the current map bounds for the
     // bounds option in the request.
+    // google.maps.event.addListener(map,'bounds_changed', () => {
     autocomplete.bindTo('bounds', map);
+    // });
 
     var infowindow = new google.maps.InfoWindow();
     // this.state.infowindow = infowindow;
@@ -48,13 +50,13 @@ class Main extends React.Component {
     });
     let that = this;
 
-    autocomplete.addListener('place_changed', function () {
-
+    autocomplete.addListener('place_changed', (e) => {
+      console.log(e);
       infowindow.close();
       marker.setVisible(false);
       var place = autocomplete.getPlace();
       if (!place.geometry) {
-
+        console.log("XXXX")
         // User entered the name of a Place that was not suggested and
         // pressed the Enter key, or the Place Details request failed.
         // window.alert("No details available for input: '" + place.name + "'");
@@ -67,34 +69,49 @@ class Main extends React.Component {
           bounds: map.getBounds()
         };
         that.service = new google.maps.places.PlacesService(map);
-        that.service.nearbySearch(request, callback);
-        let then = that;
-
-        function callback(results, status) {
+        // let then = that;
+        const callback = (results, status) => {
           if (status == google.maps.places.PlacesServiceStatus.OK) {
-            then.clearResults();
-            then.clearMarkers();
+            that.clearResults();
+            that.clearMarkers();
             // Create a marker for each establishment found, and
             // assign a letter of the alphabetic to each marker icon.
+            let markers =[];
+
             for (var i = 0; i < results.length; i++) {
               var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
-              var markerIcon = then.state.MARKER_PATH + markerLetter + '.png';
+              var markerIcon = that.state.MARKER_PATH + markerLetter + '.png';
               // Use marker animation to drop the icons incrementally on the map.
-              then.state.markers[i] = new google.maps.Marker({
+
+              markers[i] = new google.maps.Marker({
                 position: results[i].geometry.location,
                 animation: google.maps.Animation.DROP,
                 icon: markerIcon
               });
+              let marker = markers[i];
+              console.log(markers)
+              google.maps.event.addListener(marker, 'click', () => {
+                console.log(marker)
+                that.showInfoWindow(i, results[i], marker)
+              });
+              //   console.log("FFFFFF");
+              //   google.maps.event.trigger(markers[i], 'click', that.showInfoWindow(i, results[i], markers[i]));
+              // };
               // If the user clicks an establishment marker, show the details of that place
               // in an info window.
-              then.state.markers[i].placeResult = results[i];
-              google.maps.event.addListener(then.state.markers[i], 'click');
-              // then.showInfoWindow(i));
-              setTimeout(then.dropMarker(i), i * 100);
-              then.addResult(results[i], i);
+              markers[i].placeResult = results[i];
+              // console.log(that.state.markers);
+              // let marker = that.state.markers[i];
+              // google.maps.event.addListener(that.state.markers[i], 'click');
+
+              // that.showInfoWindow(i, results[i]);
+              setTimeout(that.dropMarker(i), i * 100);
+              that.addResult(i, results[i], markers[i]);
             }
+            that.setState({markers});
           }
         };
+        that.service.nearbySearch(request, callback);
         return;
       }
 
@@ -157,21 +174,22 @@ class Main extends React.Component {
   }
 
 
-  addResult(result, i) {
+  addResult(i, result, mark) {
+    // console.log(result);
     var results = document.getElementById('results');
     var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
     var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
     var tr = document.createElement('tr');
     tr.style.backgroundColor = (i % 2 === 0 ? '#F0F0F0' : '#FFFFFF');
-    let that = this;
-    // tr.onclick = function () {
-    //   console.log('click')
-    //   google.maps.event.trigger(that.state.markers[i], 'click');
-    // };
+    // let that = this;
+    // console.log(result)
+    // let marker = result;
+    // let x = i;
+    // google.maps.event.addListener(result, 'click', that.showInfoWindow(x, marker, mark));
 
-    this.state.markers[i].addListener('click', function() {
-    google.maps.event.trigger(that.state.markers[i], 'click')
-    });
+    tr.onclick = ()  => {
+      google.maps.event.trigger(this.state.markers[i], 'click', this.showInfoWindow(i, result, mark));
+    };
 
     var iconTd = document.createElement('td');
     var nameTd = document.createElement('td');
@@ -197,9 +215,9 @@ class Main extends React.Component {
       trafficModel: 'pessimistic'
       };
     var address = '';
-          if (result.vicinity) {
-            address = document.createTextNode(result.vicinity.split(',')[0]);
-          };
+    if (result.vicinity) {
+      address = document.createTextNode(result.vicinity.split(',')[0]);
+    };
     iconTd.appendChild(icon);
     nameTd.appendChild(name);
     addressTd.appendChild(address);
@@ -247,7 +265,7 @@ class Main extends React.Component {
 
   // Get the place details for a hotel. Show the information in an info window,
   // anchored on the marker for the hotel that the user selected.
-  showInfoWindow(i) {
+  showInfoWindow(i, result, marker) {
     // var then = this;
     // // console.log(marker.service.getDetails)
     // this.service.getDetails({
@@ -262,87 +280,27 @@ class Main extends React.Component {
     //     then.buildIWContent(place);
     //   });
     // var infowindow = this.state.infowindow;
+    // console.log(marker);
 
-    var infoWindow = new google.maps.InfoWindow();
-    var infoCont = document.getElementById('info-content');
+    // var infoWindow = new google.maps.InfoWindow();
+
+    const infoCont = document.getElementById('infoContent');
     infoWindow.setContent(infoCont);
-      var address = '';
-      var place = this.state.markers[i].placeResult;
-      // console.log(place)
+    console.log(infoCont);
+    infoCont.children['place-icon'].src = marker.placeResult.icon || marresultke.icon;
+    infoCont.children['place-name'].textContent = marker.placeResult.name || result.name;
+    infoCont.children['place-address'].textContent = marker.placeResult.vicinity || result.vicinity;
+    var address = '';
+    // var place = mark.placeResult;
+    // console.log(map)
+    // console.log(place)
       // if (place) {
       //   address = [
       //     (place.vicinity || '')
       //   ].join(' ');
       // }
-
-      infoCont.children['place-icon'].src = place.icon;
-      infoCont.children['place-name'].textContent = place.name;
-      infoCont.children['place-address'].textContent = address;
-      infoWindow.open(map, this.state.markers[i]);
-
+    infoWindow.open(map, marker);
   }
-
-  // Load the place information into the HTML elements used by the info window.
-  buildIWContent(place) {
-    // console.log(place.name)
-    document.getElementById('iw-icon').innerHTML = '<img class="hotelIcon" ' +
-      'src="' + place.icon + '"/>';
-    document.getElementById('iw-url').innerHTML = '<b><a href="' + place.url +
-      '">' + place.name + '</a></b>';
-    document.getElementById('iw-address').textContent = place.vicinity;
-
-    if (place.formatted_phone_number) {
-      document.getElementById('iw-phone-row').style.display = '';
-      document.getElementById('iw-phone').textContent =
-        "place.formatted_phone_number";
-    } else {
-      document.getElementById('iw-phone-row').style.display = 'none';
-    }
-
-    // Assign a five-star rating to the hotel, using a black star ('&#10029;')
-    // to indicate the rating the hotel has earned, and a white star ('&#10025;')
-    // for the rating points not achieved.
-    if (place.rating) {
-      var ratingHtml = '';
-      for (var i = 0; i < 5; i++) {
-        if (place.rating < (i + 0.5)) {
-          ratingHtml += '&#10025;';
-        } else {
-          ratingHtml += '&#10029;';
-        }
-        document.getElementById('iw-rating-row').style.display = '';
-        document.getElementById('iw-rating').innerHTML = ratingHtml;
-      }
-    } else {
-      document.getElementById('iw-rating-row').style.display = 'none';
-    }
-
-    // The regexp isolates the first part of the URL (domain plus subdomain)
-    // to give a short URL for displaying in the info window.
-    if (place.website) {
-      var fullUrl = place.website;
-      var website = this.state.hostnameRegexp.exec(place.website);
-      if (website === null) {
-        website = 'http://' + place.website + '/';
-        fullUrl = website;
-      }
-      document.getElementById('iw-website-row').style.display = '';
-      document.getElementById('iw-website').textContent = website;
-    } else {
-      document.getElementById('iw-website-row').style.display = 'none';
-    }
-  }
-
-  // onPlaceChanged() {
-  //   let place = autocomplete.getPlace();
-  //   if (place.geometry) {
-  //     map.panTo(place.geometry.location);
-  //     map.setZoom(15);
-  //     search();
-  //   } else {
-  //     document.getElementById('autocomplete').placeholder = '';
-  //   };
-  // }
 
   render() {
     return (
