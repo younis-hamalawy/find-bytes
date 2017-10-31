@@ -128,7 +128,7 @@ class Main extends React.Component {
 
     document.getElementById('use-strict-bounds')
       .addEventListener('click', function () {
-        console.log('Checkbox clicked! New state=' + this.checked);
+        // console.log('Checkbox clicked! New state=' + this.checked);
         autocomplete.setOptions({
           strictBounds: this.checked
         });
@@ -163,13 +163,6 @@ class Main extends React.Component {
     var results = document.getElementById('results');
     var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
     var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
-    // navigator.geolocation.getCurrentPosition(function (position) {
-    //       let pos = {
-    //         lat: position.coords.latitude,
-    //         lng: position.coords.longitude
-    //       };
-    //       console.log(pos);
-    //     });
     var tr = document.createElement('tr');
     tr.style.backgroundColor = (i % 2 === 0 ? '#F0F0F0' : '#FFFFFF');
     let that = this;
@@ -188,11 +181,23 @@ class Main extends React.Component {
     var addressTd = document.createElement('td');
     var ratingTd = document.createElement('td');
     var distanceTd = document.createElement('td');
-    var distance = document.createTextNode((google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(pos), new google.maps.LatLng(result.geometry.location.lat(), result.geometry.location.lng())) /1600.09344).toFixed(1));
+    var timeTd = document.createElement('td');
+    var distance = document.createTextNode('');
+    var time = document.createTextNode('');
+    var name = document.createTextNode(result.name);
+
     icon.src = markerIcon;
     icon.setAttribute('class', 'placeIcon');
     icon.setAttribute('className', 'placeIcon');
-    var name = document.createTextNode(result.name);
+    ratingTd.setAttribute('id', `iw-rating${i}`)
+    timeTd.setAttribute('id', `iw-time${i}`)
+    distanceTd.setAttribute('id', `iw-distance${i}`)
+    var service = new google.maps.DistanceMatrixService();
+    var date = new Date();
+    var DrivingOptions = {
+      departureTime: date,
+      trafficModel: 'pessimistic'
+      };
     var address = '';
           if (result.vicinity) {
             address = document.createTextNode(result.vicinity.split(',')[0]);
@@ -200,13 +205,14 @@ class Main extends React.Component {
     iconTd.appendChild(icon);
     nameTd.appendChild(name);
     addressTd.appendChild(address);
-    ratingTd.setAttribute('id', `iw-rating${i}`)
     distanceTd.appendChild(distance);
+    timeTd.appendChild(time);
     tr.appendChild(iconTd);
     tr.appendChild(nameTd);
     tr.appendChild(addressTd);
     tr.appendChild(ratingTd);
     tr.appendChild(distanceTd);
+    tr.appendChild(timeTd)
     results.appendChild(tr);
     if (result.rating) {
       var ratingHtml = '';
@@ -219,6 +225,27 @@ class Main extends React.Component {
         document.getElementById(`iw-rating${i}`).innerHTML = ratingHtml;
       }
     }
+    service.getDistanceMatrix(
+      {
+        origins: [pos],
+        destinations: [new google.maps.LatLng(result.geometry.location.lat(), result.geometry.location.lng())],
+        travelMode: 'DRIVING',
+        drivingOptions : DrivingOptions,
+        unitSystem: google.maps.UnitSystem.Imperical,
+        durationInTraffic: true,
+        avoidHighways: false,
+        avoidTolls: false
+      }, response_data);function response_data(responseDis, status) {
+      if (status !== google.maps.DistanceMatrixStatus.OK || status != "OK"){
+        console.log('Error:', status);
+        // OR
+        alert(status);
+      }else{
+           time = (responseDis.rows[0].elements[0].duration_in_traffic.text);
+           distance = (parseFloat((responseDis.rows[0].elements[0].distance.text).split(' ')[0])/1.6).toFixed(1) + ' mile';
+           document.getElementById(`iw-time${i}`).innerHTML = time;
+           document.getElementById(`iw-distance${i}`).innerHTML = distance;
+      }};
   }
 
 
@@ -245,7 +272,7 @@ class Main extends React.Component {
     infoWindow.setContent(infoCont);
       var address = '';
       var place = this.state.markers[i].placeResult;
-      console.log(place)
+      // console.log(place)
       // if (place) {
       //   address = [
       //     (place.vicinity || '')
@@ -261,7 +288,7 @@ class Main extends React.Component {
 
   // Load the place information into the HTML elements used by the info window.
   buildIWContent(place) {
-    console.log(place.name)
+    // console.log(place.name)
     document.getElementById('iw-icon').innerHTML = '<img class="hotelIcon" ' +
       'src="' + place.icon + '"/>';
     document.getElementById('iw-url').innerHTML = '<b><a href="' + place.url +
