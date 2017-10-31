@@ -64,7 +64,6 @@ class Main extends React.Component {
           radius: '500',
           query: input.value,
           keyword: input.value,
-          // type: ['restaurant']
           bounds: map.getBounds()
         };
         that.service = new google.maps.places.PlacesService(map);
@@ -75,7 +74,7 @@ class Main extends React.Component {
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             then.clearResults();
             then.clearMarkers();
-            // Create a marker for each hotel found, and
+            // Create a marker for each establishment found, and
             // assign a letter of the alphabetic to each marker icon.
             for (var i = 0; i < results.length; i++) {
               var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
@@ -86,7 +85,7 @@ class Main extends React.Component {
                 animation: google.maps.Animation.DROP,
                 icon: markerIcon
               });
-              // If the user clicks a hotel marker, show the details of that hotel
+              // If the user clicks an establishment marker, show the details of that place
               // in an info window.
               then.state.markers[i].placeResult = results[i];
               google.maps.event.addListener(then.state.markers[i], 'click');
@@ -128,7 +127,6 @@ class Main extends React.Component {
 
     document.getElementById('use-strict-bounds')
       .addEventListener('click', function () {
-        // console.log('Checkbox clicked! New state=' + this.checked);
         autocomplete.setOptions({
           strictBounds: this.checked
         });
@@ -238,8 +236,6 @@ class Main extends React.Component {
       }, response_data);function response_data(responseDis, status) {
       if (status !== google.maps.DistanceMatrixStatus.OK || status != "OK"){
         console.log('Error:', status);
-        // OR
-        alert(status);
       }else{
            time = (responseDis.rows[0].elements[0].duration_in_traffic.text);
            distance = (parseFloat((responseDis.rows[0].elements[0].distance.text).split(' ')[0])/1.6).toFixed(1) + ' mile';
