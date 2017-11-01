@@ -33,12 +33,15 @@ class Main extends React.Component {
       map: map,
       anchorPoint: new google.maps.Point(0, -29)
     });
+    marker.setVisible(false);
+    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, map: map});
+    var infowindow2 = new google.maps.InfoWindow();
 
     let that = this;
 
     autocomplete.addListener('place_changed', () => {
       infoWindow.close();
-      marker.setVisible(false);
       var place = autocomplete.getPlace();
       if (!place.geometry) {
         // User entered the name of a Place that was not suggested and
@@ -77,8 +80,8 @@ class Main extends React.Component {
               // in an info window.
               // let newpos = pos;
 
-              var directionsService = new google.maps.DirectionsService;
-              var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, map: map});
+
+
 
               google.maps.event.addListener(marker, 'click', () => {
                 infoWindow.close();
@@ -105,6 +108,14 @@ class Main extends React.Component {
                 }, function(response, status) {
                   if (status === 'OK') {
                     directionsDisplay.setDirections(response);
+                    if (response.routes[0].legs[0].steps.length > 3){
+                      var step = response.routes[0].legs[0].steps.length - 3;
+                    } else {
+                      var step = 1;
+                    }
+                    infowindow2.setContent(response.routes[0].legs[0].distance.text + "<br>" + response.routes[0].legs[0].duration.text + " ");
+                    infowindow2.setPosition(response.routes[0].legs[0].steps[step].end_location);
+                    infowindow2.open(map);
                   } else {
                     window.alert('Directions request failed due to ' + status);
                   }
@@ -140,6 +151,27 @@ class Main extends React.Component {
                     ].join(' ');
                   }
                 infoCont.children['place-address'].textContent = address;
+
+                directionsService.route({
+                  origin: pos,
+                  destination: new google.maps.LatLng(marker.placeResult.geometry.location.lat(), marker.placeResult.geometry.location.lng()),
+                  travelMode: 'BICYCLING'
+                }, function(response, status) {
+                  if (status === 'OK') {
+                    directionsDisplay.setDirections(response);
+                    if (response.routes[0].legs[0].steps.length > 3){
+                      var step = response.routes[0].legs[0].steps.length - 3;
+                    } else {
+                      var step = 1;
+                    }
+                    infowindow2.setContent(response.routes[0].legs[0].distance.text + "<br>" + response.routes[0].legs[0].duration.text + " ");
+                    infowindow2.setPosition(response.routes[0].legs[0].steps[step].end_location);
+                    infowindow2.open(map);
+                  } else {
+                    window.alert('Directions request failed due to ' + status);
+                  }
+                });
+
                 infoWindow.open(map, marker);
               };
 
@@ -249,6 +281,25 @@ class Main extends React.Component {
       infoCont.children['place-icon'].src = place.icon;
       infoCont.children['place-name'].textContent = place.name;
       infoCont.children['place-address'].textContent = address;
+      directionsService.route({
+        origin: pos,
+        destination: new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng()),
+        travelMode: 'BICYCLING'
+      }, function(response, status) {
+        if (status === 'OK') {
+          directionsDisplay.setDirections(response);
+          if (response.routes[0].legs[0].steps.length > 3){
+            var step = response.routes[0].legs[0].steps.length - 3;
+          } else {
+            var step = 1;
+          }
+          infowindow2.setContent(response.routes[0].legs[0].distance.text + "<br>" + response.routes[0].legs[0].duration.text + " ");
+          infowindow2.setPosition(response.routes[0].legs[0].steps[step].end_location);
+          infowindow2.open(map);
+        } else {
+          window.alert('Directions request failed due to ' + status);
+        }
+      });
       infoWindow.open(map, marker);
     });
 
