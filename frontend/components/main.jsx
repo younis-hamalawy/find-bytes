@@ -352,15 +352,15 @@ class Main extends React.Component {
         <div className="pac-card" id="pac-card">
           <div>
             <div id="title">
-              Welcome to Find Bytes!
+              goFind!
             </div>
             <div id="strict-bounds-selector" className="pac-controls">
               <input type="checkbox" id="use-strict-bounds" defaultValue />
-              <label htmlFor="use-strict-bounds">Search within window</label>
+              <label htmlFor="use-strict-bounds">Search within the window</label>
             </div>
           </div>
           <div id="pac-container">
-            <input id="pac-input" type="text" placeholder="Enter a location" />
+            <input id="pac-input" type="text" placeholder="What are you looking for?" />
           </div>
           <div id="listing">
             <table id="resultsTable">
