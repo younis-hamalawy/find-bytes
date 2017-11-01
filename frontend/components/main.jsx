@@ -325,9 +325,8 @@ class Main extends React.Component {
   }
 
   dropMarker(i) {
-    let that = this;
-    return function () {
-      that.state.markers[i].setMap(map);
+    return () => {
+      this.state.markers[i].setMap(map);
     };
   }
 
