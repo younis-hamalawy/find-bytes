@@ -75,6 +75,11 @@ class Main extends React.Component {
 
               // If the user clicks an establishment marker, show the details of that place
               // in an info window.
+              // let newpos = pos;
+
+              var directionsService = new google.maps.DirectionsService;
+              var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true, map: map});
+
               google.maps.event.addListener(marker, 'click', () => {
                 infoWindow.close();
                 let infoCont = document.getElementById('infoContent') || this.state.infoCont;
@@ -92,6 +97,18 @@ class Main extends React.Component {
                     ].join(' ');
                   }
                 infoCont.children['place-address'].textContent = address;
+
+                directionsService.route({
+                  origin: pos,
+                  destination: new google.maps.LatLng(marker.placeResult.geometry.location.lat(), marker.placeResult.geometry.location.lng()),
+                  travelMode: 'BICYCLING'
+                }, function(response, status) {
+                  if (status === 'OK') {
+                    directionsDisplay.setDirections(response);
+                  } else {
+                    window.alert('Directions request failed due to ' + status);
+                  }
+                });
                 infoWindow.open(map, marker);
               });
 
@@ -183,7 +200,7 @@ class Main extends React.Component {
               if (status !== google.maps.DistanceMatrixStatus.OK || status != "OK"){
                 console.log('Error:', status);
               }else{
-                  time = (responseDis.rows[0].elements[0].duration_in_traffic.text);
+                  time = (responseDis.rows[0].elements[0].duration.text);
                   distance = (parseFloat((responseDis.rows[0].elements[0].distance.text).split(' ')[0])/1.6).toFixed(1) + ' mile';
                   document.getElementById(`iw-time${x}`).innerHTML = time;
                   document.getElementById(`iw-distance${x}`).innerHTML = distance;
@@ -193,10 +210,10 @@ class Main extends React.Component {
                 {
                   origins: [pos],
                   destinations: [new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng())],
-                  travelMode: 'DRIVING',
+                  travelMode: 'BICYCLING',
                   drivingOptions : DrivingOptions,
                   unitSystem: google.maps.UnitSystem.Imperical,
-                  durationInTraffic: true,
+                  // duration_in_traffic: true,
                   avoidHighways: false,
                   avoidTolls: false
                 }, response_data);
