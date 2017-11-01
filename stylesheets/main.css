@@ -95,19 +95,10 @@ body {
   overflow-x: hidden;
 }
 
-#info {
-  display: none;
-}
-
 .placeIcon {
   width: 20px;
   height: 34px;
   margin: 4px;
-}
-
-.hotelIcon {
-  width: 24px;
-  height: 24px;
 }
 
 #resultsTable {

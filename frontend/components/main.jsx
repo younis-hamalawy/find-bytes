@@ -36,9 +36,7 @@ class Main extends React.Component {
 
     let that = this;
 
-
     autocomplete.addListener('place_changed', () => {
-
       infoWindow.close();
       marker.setVisible(false);
       var place = autocomplete.getPlace();
@@ -106,7 +104,6 @@ class Main extends React.Component {
               // in an info window.
               tr.onclick = ()  => {
                 infoWindow.close();
-
                 let infoCont = document.getElementById('infoContent') || this.state.infoCont;
                 infoWindow.setContent(infoCont);
                 infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
@@ -171,7 +168,9 @@ class Main extends React.Component {
                   document.getElementById(`iw-rating${i}`).innerHTML = ratingHtml;
                 }
               }
+
               let x = i;
+
               const response_data = (responseDis, status) => {
               if (status !== google.maps.DistanceMatrixStatus.OK || status != "OK"){
                 console.log('Error:', status);
@@ -181,6 +180,7 @@ class Main extends React.Component {
                   document.getElementById(`iw-time${x}`).innerHTML = time;
                   document.getElementById(`iw-distance${x}`).innerHTML = distance;
               }};
+
               service.getDistanceMatrix(
                 {
                   origins: [pos],
