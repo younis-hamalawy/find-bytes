@@ -109,7 +109,7 @@ class Main extends React.Component {
                   if (status === 'OK') {
                     directionsDisplay.setDirections(response);
                     if (response.routes[0].legs[0].steps.length > 2){
-                      var step = response.routes[0].legs[0].steps.length/2;
+                      var step = Math.floor(response.routes[0].legs[0].steps.length/2);
                     } else {
                       var step = 1;
                     }
@@ -160,7 +160,7 @@ class Main extends React.Component {
                   if (status === 'OK') {
                     directionsDisplay.setDirections(response);
                     if (response.routes[0].legs[0].steps.length > 2){
-                      var step = response.routes[0].legs[0].steps.length/2;
+                      var step = Math.floor(response.routes[0].legs[0].steps.length/2);
                     } else {
                       var step = 1;
                     }
@@ -289,7 +289,7 @@ class Main extends React.Component {
         if (status === 'OK') {
           directionsDisplay.setDirections(response);
           if (response.routes[0].legs[0].steps.length > 2){
-            var step = response.routes[0].legs[0].steps.length/2;
+            var step = Math.floor(response.routes[0].legs[0].steps.length/2);
           } else {
             var step = 1;
           }
