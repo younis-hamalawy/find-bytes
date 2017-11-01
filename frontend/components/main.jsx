@@ -4,17 +4,9 @@ class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      map: '',
       markers: [],
-      service: '',
-      strictBounds: '',
-      marker: '',
-      infowindow: '',
-      infowindowContent: '',
-      place: '',
       MARKER_PATH: 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
-      hostnameRegexp: new RegExp('^https?://.+?/'),
-      infoCont: ''
+      hostnameRegexp: new RegExp('^https?://.+?/')
     };
 
     this.dropMarker = this.dropMarker.bind(this);
@@ -34,17 +26,18 @@ class Main extends React.Component {
     // so that the autocomplete requests use the current map bounds for the
     // bounds option in the request.
     autocomplete.bindTo('bounds', map);
-    var infoWindow = new google.maps.InfoWindow();
-    let infoCont = document.getElementById('infoContent');
-    this.setState({infoCont: document.getElementById('infoContent')});
-    infoWindow.setContent(infoCont);
-    var marker = new google.maps.Marker({
-      map: map,
-      anchorPoint: new google.maps.Point(0, -29)
-    });
+
     let that = this;
 
     autocomplete.addListener('place_changed', () => {
+      var infoWindow = new google.maps.InfoWindow();
+      let infoCont = document.getElementById('infoContent');
+      this.setState({infoCont: document.getElementById('infoContent')});
+      infoWindow.setContent(infoCont);
+      var marker = new google.maps.Marker({
+        map: map,
+        anchorPoint: new google.maps.Point(0, -29)
+      });
       infoWindow.close();
       marker.setVisible(false);
       var place = autocomplete.getPlace();
@@ -96,7 +89,7 @@ class Main extends React.Component {
 
               tr.onclick = ()  => {
                 infoWindow.close();
-                google.maps.event.trigger(marker, 'click', that.showInfoWindow(i, results[i], marker));
+                google.maps.event.trigger(that.showInfoWindow(i, results[i], marker));
               };
 
               var iconTd = document.createElement('td');
@@ -239,22 +232,6 @@ class Main extends React.Component {
   // Get the place details for a hotel. Show the information in an info window,
   // anchored on the marker for the hotel that the user selected.
   showInfoWindow(i, result, marker) {
-    // var then = this;
-    // // console.log(marker.service.getDetails)
-    // this.service.getDetails({
-    //     placeId: this.state.markers[i].placeResult.place_id
-    //   },
-    //   function (place, status) {
-    //     if (status !== google.maps.places.PlacesServiceStatus.OK) {
-    //       return;
-    //     }
-    //     let infoWindow = new google.maps.InfoWindow;
-    //     infoWindow.open(map, then.state.markers[i]);
-    //     then.buildIWContent(place);
-    //   });
-    // var infowindow = this.state.infowindow;
-    // console.log(marker);
-
     var infoWindow = new google.maps.InfoWindow();
     infoWindow.close();
 
@@ -265,9 +242,6 @@ class Main extends React.Component {
     infoCont.children['place-name'].textContent = marker.placeResult.name || result.name;
     infoCont.children['place-address'].textContent = marker.placeResult.vicinity || result.vicinity;
     var address = '';
-    // var place = mark.placeResult;
-    // console.log(map)
-    // console.log(place)
       // if (place) {
       //   address = [
       //     (place.vicinity || '')
