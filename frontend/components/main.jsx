@@ -12,7 +12,6 @@ class Main extends React.Component {
     this.dropMarker = this.dropMarker.bind(this);
     this.clearMarkers = this.clearMarkers.bind(this);
     this.clearResults = this.clearResults.bind(this);
-    this.showInfoWindow = this.showInfoWindow.bind(this);
   }
 
   componentDidMount() {
@@ -58,10 +57,10 @@ class Main extends React.Component {
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             that.clearResults();
             that.clearMarkers();
-            // Create a marker for each establishment found, and
-            // assign a letter of the alphabetic to each marker icon.
             let markers =[];
 
+            // Create a marker for each establishment found, and
+            // assign a letter of the alphabetic to each marker icon.
             for (var i = 0; i < results.length; i++) {
               var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
               var markerIcon = that.state.MARKER_PATH + markerLetter + '.png';
@@ -286,7 +285,6 @@ class Main extends React.Component {
           <span id="place-name" className="title" /><br />
           <span id="place-address" />
         </div>
-
       </div>
     );
   }
