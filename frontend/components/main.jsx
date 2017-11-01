@@ -13,10 +13,10 @@ class Main extends React.Component {
       infowindowContent: '',
       place: '',
       MARKER_PATH: 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
-      hostnameRegexp: new RegExp('^https?://.+?/')
+      hostnameRegexp: new RegExp('^https?://.+?/'),
+      infoCont: ''
     };
 
-    this.addResult = this.addResult.bind(this);
     this.dropMarker = this.dropMarker.bind(this);
     this.clearMarkers = this.clearMarkers.bind(this);
     this.clearResults = this.clearResults.bind(this);
@@ -26,41 +26,31 @@ class Main extends React.Component {
   componentDidMount() {
     var card = document.getElementById('pac-card');
     var input = document.getElementById('pac-input');
-    // var types = document.getElementById('type-selector');
     var strictBounds = document.getElementById('strict-bounds-selector');
-
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
-
     var autocomplete = new google.maps.places.Autocomplete(input);
 
     // Bind the map's bounds (viewport) property to the autocomplete object,
     // so that the autocomplete requests use the current map bounds for the
     // bounds option in the request.
-    // google.maps.event.addListener(map,'bounds_changed', () => {
     autocomplete.bindTo('bounds', map);
-    // });
-
-    var infowindow = new google.maps.InfoWindow();
-    // this.state.infowindow = infowindow;
-    var infoContent = document.getElementById('infoContent');
-    infowindow.setContent(infoContent);
+    var infoWindow = new google.maps.InfoWindow();
+    let infoCont = document.getElementById('infoContent');
+    this.setState({infoCont: document.getElementById('infoContent')});
+    infoWindow.setContent(infoCont);
     var marker = new google.maps.Marker({
       map: map,
       anchorPoint: new google.maps.Point(0, -29)
     });
     let that = this;
 
-    autocomplete.addListener('place_changed', (e) => {
-      console.log(e);
-      infowindow.close();
+    autocomplete.addListener('place_changed', () => {
+      infoWindow.close();
       marker.setVisible(false);
       var place = autocomplete.getPlace();
       if (!place.geometry) {
-        console.log("XXXX")
         // User entered the name of a Place that was not suggested and
         // pressed the Enter key, or the Place Details request failed.
-        // window.alert("No details available for input: '" + place.name + "'");
-        // this.submitQuery(input)
         var request = {
           location: map.center,
           radius: '500',
@@ -69,7 +59,6 @@ class Main extends React.Component {
           bounds: map.getBounds()
         };
         that.service = new google.maps.places.PlacesService(map);
-        // let then = that;
         const callback = (results, status) => {
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             that.clearResults();
@@ -89,24 +78,98 @@ class Main extends React.Component {
                 icon: markerIcon
               });
               let marker = markers[i];
-              console.log(markers)
               google.maps.event.addListener(marker, 'click', () => {
-                console.log(marker)
+                infoWindow.close();
+                console.log(infoWindow);
                 that.showInfoWindow(i, results[i], marker)
               });
-              //   console.log("FFFFFF");
-              //   google.maps.event.trigger(markers[i], 'click', that.showInfoWindow(i, results[i], markers[i]));
-              // };
               // If the user clicks an establishment marker, show the details of that place
               // in an info window.
               markers[i].placeResult = results[i];
-              // console.log(that.state.markers);
-              // let marker = that.state.markers[i];
-              // google.maps.event.addListener(that.state.markers[i], 'click');
-
-              // that.showInfoWindow(i, results[i]);
               setTimeout(that.dropMarker(i), i * 100);
-              that.addResult(i, results[i], markers[i]);
+              var results1 = document.getElementById('results');
+              var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
+              var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
+              var tr = document.createElement('tr');
+              tr.style.backgroundColor = (i % 2 === 0 ? '#F0F0F0' : '#FFFFFF');
+              // google.maps.event.addListener(result, 'click', that.showInfoWindow(x, marker, mark));
+
+              tr.onclick = ()  => {
+                infoWindow.close();
+                google.maps.event.trigger(marker, 'click', that.showInfoWindow(i, results[i], marker));
+              };
+
+              var iconTd = document.createElement('td');
+              var nameTd = document.createElement('td');
+              var icon = document.createElement('img');
+              var addressTd = document.createElement('td');
+              var ratingTd = document.createElement('td');
+              var distanceTd = document.createElement('td');
+              var timeTd = document.createElement('td');
+              var distance = document.createTextNode('');
+              var time = document.createTextNode('');
+              var name = document.createTextNode(results[i].name);
+
+              icon.src = markerIcon;
+              icon.setAttribute('class', 'placeIcon');
+              icon.setAttribute('className', 'placeIcon');
+              ratingTd.setAttribute('id', `iw-rating${i}`)
+              timeTd.setAttribute('id', `iw-time${i}`)
+              distanceTd.setAttribute('id', `iw-distance${i}`)
+              var service = new google.maps.DistanceMatrixService();
+              var date = new Date();
+              var DrivingOptions = {
+                departureTime: date,
+                trafficModel: 'pessimistic'
+                };
+              var address = '';
+              if (results[i].vicinity) {
+                address = document.createTextNode(results[i].vicinity.split(',')[0]);
+              };
+              iconTd.appendChild(icon);
+              nameTd.appendChild(name);
+              addressTd.appendChild(address);
+              distanceTd.appendChild(distance);
+              timeTd.appendChild(time);
+              tr.appendChild(iconTd);
+              tr.appendChild(nameTd);
+              tr.appendChild(addressTd);
+              tr.appendChild(ratingTd);
+              tr.appendChild(distanceTd);
+              tr.appendChild(timeTd)
+              results1.appendChild(tr);
+              if (results[i].rating) {
+                var ratingHtml = '';
+                for (var j = 0; j < 5; j++) {
+                  if (results[i].rating < (j + 0.5)) {
+                    ratingHtml += '&#10025;';
+                  } else {
+                    ratingHtml += '&#10029;';
+                  }
+                  document.getElementById(`iw-rating${i}`).innerHTML = ratingHtml;
+                }
+              }
+              let x = i;
+              const response_data = (responseDis, status) => {
+              if (status !== google.maps.DistanceMatrixStatus.OK || status != "OK"){
+                console.log('Error:', status);
+              }else{
+                  time = (responseDis.rows[0].elements[0].duration_in_traffic.text);
+                  distance = (parseFloat((responseDis.rows[0].elements[0].distance.text).split(' ')[0])/1.6).toFixed(1) + ' mile';
+                  document.getElementById(`iw-time${x}`).innerHTML = time;
+                  document.getElementById(`iw-distance${x}`).innerHTML = distance;
+              }};
+              service.getDistanceMatrix(
+                {
+                  origins: [pos],
+                  destinations: [new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng())],
+                  travelMode: 'DRIVING',
+                  drivingOptions : DrivingOptions,
+                  unitSystem: google.maps.UnitSystem.Imperical,
+                  durationInTraffic: true,
+                  avoidHighways: false,
+                  avoidTolls: false
+                }, response_data);
             }
             that.setState({markers});
           }
@@ -136,10 +199,10 @@ class Main extends React.Component {
         ].join(' ');
       }
 
-      infoContent.children['place-icon'].src = place.icon;
-      infoContent.children['place-name'].textContent = place.name;
-      infoContent.children['place-address'].textContent = address;
-      infowindow.open(map, marker);
+      infoCont.children['place-icon'].src = place.icon;
+      infoCont.children['place-name'].textContent = place.name;
+      infoCont.children['place-address'].textContent = address;
+      infoWindow.open(map, marker);
     });
 
     document.getElementById('use-strict-bounds')
@@ -173,96 +236,6 @@ class Main extends React.Component {
     }
   }
 
-
-  addResult(i, result, mark) {
-    // console.log(result);
-    var results = document.getElementById('results');
-    var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
-    var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
-    var tr = document.createElement('tr');
-    tr.style.backgroundColor = (i % 2 === 0 ? '#F0F0F0' : '#FFFFFF');
-    // let that = this;
-    // console.log(result)
-    // let marker = result;
-    // let x = i;
-    // google.maps.event.addListener(result, 'click', that.showInfoWindow(x, marker, mark));
-
-    tr.onclick = ()  => {
-      google.maps.event.trigger(this.state.markers[i], 'click', this.showInfoWindow(i, result, mark));
-    };
-
-    var iconTd = document.createElement('td');
-    var nameTd = document.createElement('td');
-    var icon = document.createElement('img');
-    var addressTd = document.createElement('td');
-    var ratingTd = document.createElement('td');
-    var distanceTd = document.createElement('td');
-    var timeTd = document.createElement('td');
-    var distance = document.createTextNode('');
-    var time = document.createTextNode('');
-    var name = document.createTextNode(result.name);
-
-    icon.src = markerIcon;
-    icon.setAttribute('class', 'placeIcon');
-    icon.setAttribute('className', 'placeIcon');
-    ratingTd.setAttribute('id', `iw-rating${i}`)
-    timeTd.setAttribute('id', `iw-time${i}`)
-    distanceTd.setAttribute('id', `iw-distance${i}`)
-    var service = new google.maps.DistanceMatrixService();
-    var date = new Date();
-    var DrivingOptions = {
-      departureTime: date,
-      trafficModel: 'pessimistic'
-      };
-    var address = '';
-    if (result.vicinity) {
-      address = document.createTextNode(result.vicinity.split(',')[0]);
-    };
-    iconTd.appendChild(icon);
-    nameTd.appendChild(name);
-    addressTd.appendChild(address);
-    distanceTd.appendChild(distance);
-    timeTd.appendChild(time);
-    tr.appendChild(iconTd);
-    tr.appendChild(nameTd);
-    tr.appendChild(addressTd);
-    tr.appendChild(ratingTd);
-    tr.appendChild(distanceTd);
-    tr.appendChild(timeTd)
-    results.appendChild(tr);
-    if (result.rating) {
-      var ratingHtml = '';
-      for (var j = 0; j < 5; j++) {
-        if (result.rating < (j + 0.5)) {
-          ratingHtml += '&#10025;';
-        } else {
-          ratingHtml += '&#10029;';
-        }
-        document.getElementById(`iw-rating${i}`).innerHTML = ratingHtml;
-      }
-    }
-    service.getDistanceMatrix(
-      {
-        origins: [pos],
-        destinations: [new google.maps.LatLng(result.geometry.location.lat(), result.geometry.location.lng())],
-        travelMode: 'DRIVING',
-        drivingOptions : DrivingOptions,
-        unitSystem: google.maps.UnitSystem.Imperical,
-        durationInTraffic: true,
-        avoidHighways: false,
-        avoidTolls: false
-      }, response_data);function response_data(responseDis, status) {
-      if (status !== google.maps.DistanceMatrixStatus.OK || status != "OK"){
-        console.log('Error:', status);
-      }else{
-           time = (responseDis.rows[0].elements[0].duration_in_traffic.text);
-           distance = (parseFloat((responseDis.rows[0].elements[0].distance.text).split(' ')[0])/1.6).toFixed(1) + ' mile';
-           document.getElementById(`iw-time${i}`).innerHTML = time;
-           document.getElementById(`iw-distance${i}`).innerHTML = distance;
-      }};
-  }
-
-
   // Get the place details for a hotel. Show the information in an info window,
   // anchored on the marker for the hotel that the user selected.
   showInfoWindow(i, result, marker) {
@@ -282,12 +255,13 @@ class Main extends React.Component {
     // var infowindow = this.state.infowindow;
     // console.log(marker);
 
-    // var infoWindow = new google.maps.InfoWindow();
+    var infoWindow = new google.maps.InfoWindow();
+    infoWindow.close();
 
-    const infoCont = document.getElementById('infoContent');
+    let infoCont = document.getElementById('infoContent') || this.state.infoCont;
     infoWindow.setContent(infoCont);
     console.log(infoCont);
-    infoCont.children['place-icon'].src = marker.placeResult.icon || marresultke.icon;
+    infoCont.children['place-icon'].src = marker.placeResult.icon || result.icon;
     infoCont.children['place-name'].textContent = marker.placeResult.name || result.name;
     infoCont.children['place-address'].textContent = marker.placeResult.vicinity || result.vicinity;
     var address = '';
@@ -329,13 +303,7 @@ class Main extends React.Component {
           <span id="place-name" className="title" /><br />
           <span id="place-address" />
         </div>
-        <div id="info">
-          <div id="info-content">
-            <img src="" width={16} height={16} id="place-icon" />
-            <span id="place-name" className="title" /><br />
-            <span id="place-address" />
-          </div>
-        </div>
+
       </div>
     );
   }

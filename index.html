@@ -28,7 +28,6 @@
         zoom: 3
       });
       initialInfoWindow = new google.maps.InfoWindow;
-      infoWindow = new google.maps.InfoWindow;
 
       // Try HTML5 geolocation.
       if (navigator.geolocation) {
@@ -43,16 +42,16 @@
           initialInfoWindow.open(map);
           map.setCenter(pos);
           map.setZoom(15);
-          // var marker = new google.maps.Marker({
-          //   position: pos,
-          //   map: map
-          // });
-          // }, function () {
-          // handleLocationError(true, initialInfoWindow, map.getCenter());
+          var marker = new google.maps.Marker({
+            position: pos,
+            map: map
+          });
+        }, function () {
+          handleLocationError(true, initialInfoWindow, map.getCenter());
         });
-        // } else {
-        // Browser doesn't support Geolocation
-        // handleLocationError(false, initialInfoWindow, map.getCenter());
+      } else {
+        // Browser doesn 't support Geolocation
+        handleLocationError(false, initialInfoWindow, map.getCenter());
       }
     }
 
