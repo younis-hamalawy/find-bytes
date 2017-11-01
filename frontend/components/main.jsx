@@ -26,11 +26,7 @@ class Main extends React.Component {
     // so that the autocomplete requests use the current map bounds for the
     // bounds option in the request.
     autocomplete.bindTo('bounds', map);
-
-    let that = this;
-
-    autocomplete.addListener('place_changed', () => {
-      var infoWindow = new google.maps.InfoWindow();
+    var infoWindow = new google.maps.InfoWindow();
       let infoCont = document.getElementById('infoContent');
       this.setState({infoCont: document.getElementById('infoContent')});
       infoWindow.setContent(infoCont);
@@ -38,6 +34,12 @@ class Main extends React.Component {
         map: map,
         anchorPoint: new google.maps.Point(0, -29)
       });
+
+    let that = this;
+
+
+    autocomplete.addListener('place_changed', () => {
+
       infoWindow.close();
       marker.setVisible(false);
       var place = autocomplete.getPlace();
