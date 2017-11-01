@@ -81,13 +81,17 @@ class Main extends React.Component {
                 infoWindow.setContent(infoCont);
                 infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
                 infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
-                infoCont.children['place-address'].textContent = marker.placeResult.vicinity || results[i].vicinity;
                 var address = '';
-                  // if (place) {
-                  //   address = [
-                  //     (place.vicinity || '')
-                  //   ].join(' ');
-                  // }
+                  if (marker.placeResult.vicinity) {
+                    address = [
+                      (marker.placeResult.vicinity.split(',')[0] || '')
+                    ].join(' ');
+                  } else if (results[i].vicinity) {
+                        address = [
+                      (results[i].vicinity.split(',')[0] || '')
+                    ].join(' ');
+                  }
+                infoCont.children['place-address'].textContent = address;
                 infoWindow.open(map, marker);
               });
 
@@ -108,13 +112,17 @@ class Main extends React.Component {
                 infoWindow.setContent(infoCont);
                 infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
                 infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
-                infoCont.children['place-address'].textContent = marker.placeResult.vicinity || results[i].vicinity;
                 var address = '';
-                  // if (place) {
-                  //   address = [
-                  //     (place.vicinity || '')
-                  //   ].join(' ');
-                  // }
+                  if (marker.placeResult.vicinity) {
+                    address = [
+                      (marker.placeResult.vicinity.split(',')[0] || '')
+                    ].join(' ');
+                  } else if (results[i].vicinity){
+                        address = [
+                      (results[i].vicinity.split(',')[0] || '')
+                    ].join(' ');
+                  }
+                infoCont.children['place-address'].textContent = address;
                 infoWindow.open(map, marker);
               };
 
