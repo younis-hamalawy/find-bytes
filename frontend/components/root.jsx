@@ -1,8 +1,8 @@
 import React from 'react';
-import App from './app';
+import Main from './main';
 
 const Root = () => (
-  <App />
+  <Main />
 );
 
 export default Root;
