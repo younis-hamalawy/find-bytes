@@ -27,13 +27,13 @@ class Main extends React.Component {
     // bounds option in the request.
     autocomplete.bindTo('bounds', map);
     var infoWindow = new google.maps.InfoWindow();
-      let infoCont = document.getElementById('infoContent');
-      this.setState({infoCont: document.getElementById('infoContent')});
-      infoWindow.setContent(infoCont);
-      var marker = new google.maps.Marker({
-        map: map,
-        anchorPoint: new google.maps.Point(0, -29)
-      });
+    let infoCont = document.getElementById('infoContent');
+    this.setState({infoCont: document.getElementById('infoContent')});
+    infoWindow.setContent(infoCont);
+    var marker = new google.maps.Marker({
+      map: map,
+      anchorPoint: new google.maps.Point(0, -29)
+    });
 
     let that = this;
 
@@ -66,20 +66,35 @@ class Main extends React.Component {
               var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
               var markerIcon = that.state.MARKER_PATH + markerLetter + '.png';
               // Use marker animation to drop the icons incrementally on the map.
-
+              var infowindow = new google.maps.InfoWindow({
+                content: ''
+              });
               markers[i] = new google.maps.Marker({
                 position: results[i].geometry.location,
                 animation: google.maps.Animation.DROP,
                 icon: markerIcon
               });
               let marker = markers[i];
-              google.maps.event.addListener(marker, 'click', () => {
-                infoWindow.close();
-                console.log(infoWindow);
-                that.showInfoWindow(i, results[i], marker)
-              });
+
               // If the user clicks an establishment marker, show the details of that place
               // in an info window.
+              google.maps.event.addListener(marker, 'click', () => {
+                infoWindow.close();
+                let infoCont = document.getElementById('infoContent') || this.state.infoCont;
+                infoWindow.setContent(infoCont);
+                infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
+                infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
+                infoCont.children['place-address'].textContent = marker.placeResult.vicinity || results[i].vicinity;
+                var address = '';
+                  // if (place) {
+                  //   address = [
+                  //     (place.vicinity || '')
+                  //   ].join(' ');
+                  // }
+                infoWindow.open(map, marker);
+              });
+
+
               markers[i].placeResult = results[i];
               setTimeout(that.dropMarker(i), i * 100);
               var results1 = document.getElementById('results');
@@ -87,11 +102,24 @@ class Main extends React.Component {
               var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
               var tr = document.createElement('tr');
               tr.style.backgroundColor = (i % 2 === 0 ? '#F0F0F0' : '#FFFFFF');
-              // google.maps.event.addListener(result, 'click', that.showInfoWindow(x, marker, mark));
 
+              // If the user clicks an establishment marker, show the details of that place
+              // in an info window.
               tr.onclick = ()  => {
                 infoWindow.close();
-                google.maps.event.trigger(that.showInfoWindow(i, results[i], marker));
+
+                let infoCont = document.getElementById('infoContent') || this.state.infoCont;
+                infoWindow.setContent(infoCont);
+                infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
+                infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
+                infoCont.children['place-address'].textContent = marker.placeResult.vicinity || results[i].vicinity;
+                var address = '';
+                  // if (place) {
+                  //   address = [
+                  //     (place.vicinity || '')
+                  //   ].join(' ');
+                  // }
+                infoWindow.open(map, marker);
               };
 
               var iconTd = document.createElement('td');
@@ -229,27 +257,6 @@ class Main extends React.Component {
     while (results.childNodes[0]) {
       results.removeChild(results.childNodes[0]);
     }
-  }
-
-  // Get the place details for a hotel. Show the information in an info window,
-  // anchored on the marker for the hotel that the user selected.
-  showInfoWindow(i, result, marker) {
-    var infoWindow = new google.maps.InfoWindow();
-    infoWindow.close();
-
-    let infoCont = document.getElementById('infoContent') || this.state.infoCont;
-    infoWindow.setContent(infoCont);
-    console.log(infoCont);
-    infoCont.children['place-icon'].src = marker.placeResult.icon || result.icon;
-    infoCont.children['place-name'].textContent = marker.placeResult.name || result.name;
-    infoCont.children['place-address'].textContent = marker.placeResult.vicinity || result.vicinity;
-    var address = '';
-      // if (place) {
-      //   address = [
-      //     (place.vicinity || '')
-      //   ].join(' ');
-      // }
-    infoWindow.open(map, marker);
   }
 
   render() {
