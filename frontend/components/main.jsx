@@ -34,7 +34,7 @@ class Main extends React.Component {
       anchorPoint: new google.maps.Point(0, -29),
     });
     var directionsService = new google.maps.DirectionsService();
-    var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true, map: map });
+    var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
     var infowindow2 = new google.maps.InfoWindow();
 
     let that = this;
@@ -45,6 +45,9 @@ class Main extends React.Component {
       if (!place.geometry) {
         // User entered the name of a Place that was not suggested and
         // pressed the Enter key, or the Place Details request failed.
+        infowindow2.close();
+        directionsDisplay.setDirections({ routes: [] });
+        directionsDisplay.setMap(map);
         var request = {
           location: map.center,
           radius: '500',
@@ -351,6 +354,7 @@ class Main extends React.Component {
         },
         function(response, status) {
           if (status === 'OK') {
+            directionsDisplay.setMap(map);
             directionsDisplay.setDirections(response);
             if (response.routes[0].legs[0].steps.length === 0) {
               return;
