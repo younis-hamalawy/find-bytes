@@ -41,7 +41,7 @@
           initialInfoWindow.setContent('You are here!');
           initialInfoWindow.open(map);
           map.setCenter(pos);
-          map.setZoom(13);
+          map.setZoom(15);
           var marker = new google.maps.Marker({
             position: pos,
             map: map
@@ -58,12 +58,12 @@
     function handleLocationError(browserHasGeolocation, initialInfoWindow, pos) {
       initialInfoWindow.setPosition(pos);
       initialInfoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
+        'Error: The Geolocation service failed. Please nagigate to your area manually!' :
+        'Error: Your browser doesn\'t support geolocation. ');
       initialInfoWindow.open(map);
     }
   </script>
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB8a_qEwNsctENyLwlYRFVgEAGikJqypRg&libraries=places,geometry&callback=initMap"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA1T_6S-B7Nj0hTpdbGj_zc91g9Qix7GdE&libraries=places,geometry&callback=initMap"></script>
 
 </body>
 

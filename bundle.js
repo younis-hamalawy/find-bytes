@@ -21318,11 +21318,12 @@ var Main = function (_React$Component) {
                 var marker = markers[i];
                 if (marker) {
                   var listing = document.getElementById('listing');
-                  listing.style.padding = "15px 0 15px 15px";
-                  listing.style.border = "1px solid #626962";
-                  listing.style.boxShadow = "inset 0 0 0 1px #272727";
-                  listing.style.width = "488px";
-                };
+                  listing.style.padding = '15px 0 15px 15px';
+                  listing.style.border = '1px solid #626962';
+                  listing.style.boxShadow = 'inset 0 0 0 1px #272727';
+                  listing.style.width = '488px';
+                  listing.style.background = '#ffffffa3';
+                }
                 // If the user clicks an establishment marker, show the details of that place
                 // in an info window.
                 google.maps.event.addListener(marker, 'click', function () {
@@ -21358,10 +21359,10 @@ var Main = function (_React$Component) {
                           startLatlng = [response.routes[0].legs[0].steps[j].start_point.lat(), response.routes[0].legs[0].steps[j].start_point.lng()];
                           endLatlng = [response.routes[0].legs[0].steps[j].end_point.lat(), response.routes[0].legs[0].steps[j].end_point.lng()];
                         }
-                      };
+                      }
                       var inBetween = google.maps.geometry.spherical.interpolate(new google.maps.LatLng(startLatlng[0], startLatlng[1]), new google.maps.LatLng(endLatlng[0], endLatlng[1]), 0.5);
                       infowindow2.setPosition(inBetween);
-                      infowindow2.setContent(response.routes[0].legs[0].distance.text + "<br>" + response.routes[0].legs[0].duration.text + " ");
+                      infowindow2.setContent(response.routes[0].legs[0].distance.text + '<br>' + response.routes[0].legs[0].duration.text + ' ');
                       infowindow2.open(map);
                     } else {
                       window.alert('Directions request failed due to ' + status);
@@ -21377,10 +21378,9 @@ var Main = function (_React$Component) {
                 markerIcon = _this2.state.MARKER_PATH + markerLetter + '.png';
                 tr = document.createElement('tr');
 
-                tr.style.backgroundColor = i % 2 === 0 ? '#F0F0F0' : '#FFFFFF';
-
                 // If the user clicks an establishment marker, show the details of that place
                 // in an info window.
+
                 tr.onclick = function () {
                   infoWindow.close();
                   var infoCont = document.getElementById('infoContent') || _this2.state.infoCont;
@@ -21414,10 +21414,10 @@ var Main = function (_React$Component) {
                           startLatlng = [response.routes[0].legs[0].steps[j].start_point.lat(), response.routes[0].legs[0].steps[j].start_point.lng()];
                           endLatlng = [response.routes[0].legs[0].steps[j].end_point.lat(), response.routes[0].legs[0].steps[j].end_point.lng()];
                         }
-                      };
+                      }
                       var inBetween = google.maps.geometry.spherical.interpolate(new google.maps.LatLng(startLatlng[0], startLatlng[1]), new google.maps.LatLng(endLatlng[0], endLatlng[1]), 0.5);
                       infowindow2.setPosition(inBetween);
-                      infowindow2.setContent(response.routes[0].legs[0].distance.text + "<br>" + response.routes[0].legs[0].duration.text + " ");
+                      infowindow2.setContent(response.routes[0].legs[0].distance.text + '<br>' + response.routes[0].legs[0].duration.text + ' ');
                       infowindow2.open(map);
                     } else {
                       window.alert('Directions request failed due to ' + status);
@@ -21454,7 +21454,7 @@ var Main = function (_React$Component) {
 
                 if (results[i].vicinity) {
                   address = document.createTextNode(results[i].vicinity.split(',')[0]);
-                };
+                }
                 iconTd.appendChild(icon);
                 nameTd.appendChild(name);
                 addressTd.appendChild(address);
@@ -21482,7 +21482,7 @@ var Main = function (_React$Component) {
 
                 var x = i;
                 var response_data = function response_data(responseDis, status) {
-                  if (status !== google.maps.DistanceMatrixStatus.OK || status != "OK") {
+                  if (status !== google.maps.DistanceMatrixStatus.OK || status != 'OK') {
                     console.log('Error:', status);
                   } else {
                     time = responseDis.rows[0].elements[0].duration.text;
@@ -21542,6 +21542,12 @@ var Main = function (_React$Component) {
         if (place.geometry.viewport) {
           that.clearResults();
           that.clearMarkers();
+          var listing = document.getElementById('listing');
+          listing.style.padding = '0';
+          listing.style.border = 'none';
+          listing.style.boxShadow = 'none';
+          listing.style.width = '518px';
+          listing.style.background = 'transparent';
           map.fitBounds(place.geometry.viewport);
         } else {
           map.setCenter(place.geometry.location);
@@ -21577,10 +21583,10 @@ var Main = function (_React$Component) {
                 startLatlng = [response.routes[0].legs[0].steps[j].start_point.lat(), response.routes[0].legs[0].steps[j].start_point.lng()];
                 endLatlng = [response.routes[0].legs[0].steps[j].end_point.lat(), response.routes[0].legs[0].steps[j].end_point.lng()];
               }
-            };
+            }
             var inBetween = google.maps.geometry.spherical.interpolate(new google.maps.LatLng(startLatlng[0], startLatlng[1]), new google.maps.LatLng(endLatlng[0], endLatlng[1]), 0.5);
             infowindow2.setPosition(inBetween);
-            infowindow2.setContent(response.routes[0].legs[0].distance.text + "<br>" + response.routes[0].legs[0].duration.text + " ");
+            infowindow2.setContent(response.routes[0].legs[0].distance.text + '<br>' + response.routes[0].legs[0].duration.text + ' ');
             infowindow2.open(map);
           } else {
             window.alert('Directions request failed due to ' + status);
