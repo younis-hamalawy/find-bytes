@@ -15,40 +15,40 @@ class Main extends React.Component {
   }
 
   componentDidMount() {
-    var card = document.getElementById('pac-card');
-    var input = document.getElementById('pac-input');
-    var strictBounds = document.getElementById('strict-bounds-selector');
+    let card = document.getElementById('pac-card');
+    let input = document.getElementById('pac-input');
+    let strictBounds = document.getElementById('strict-bounds-selector');
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
-    var autocomplete = new google.maps.places.Autocomplete(input);
+    let autocomplete = new google.maps.places.Autocomplete(input);
 
     // Bind the map's bounds (viewport) property to the autocomplete object,
     // so that the autocomplete requests use the current map bounds for the
     // bounds option in the request.
     autocomplete.bindTo('bounds', map);
-    var infoWindow = new google.maps.InfoWindow();
+    let infoWindow = new google.maps.InfoWindow();
     let infoCont = document.getElementById('infoContent');
     this.setState({ infoCont: document.getElementById('infoContent') });
     infoWindow.setContent(infoCont);
-    var marker = new google.maps.Marker({
+    let marker = new google.maps.Marker({
       map: map,
       anchorPoint: new google.maps.Point(0, -29),
     });
-    var directionsService = new google.maps.DirectionsService();
-    var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
-    var infowindow2 = new google.maps.InfoWindow();
+    let directionsService = new google.maps.DirectionsService();
+    let directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+    let infowindow2 = new google.maps.InfoWindow();
 
     let that = this;
 
     autocomplete.addListener('place_changed', () => {
       infoWindow.close();
-      var place = autocomplete.getPlace();
+      let place = autocomplete.getPlace();
       if (!place.geometry) {
         // User entered the name of a Place that was not suggested and
         // pressed the Enter key, or the Place Details request failed.
         infowindow2.close();
         directionsDisplay.setDirections({ routes: [] });
         directionsDisplay.setMap(map);
-        var request = {
+        let request = {
           location: map.center,
           radius: '500',
           query: input.value,
@@ -64,11 +64,11 @@ class Main extends React.Component {
             marker.setVisible(false);
             // Create a marker for each establishment found, and
             // assign a letter of the alphabetic to each marker icon.
-            for (var i = 0; i < results.length; i++) {
-              var markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
-              var markerIcon = that.state.MARKER_PATH + markerLetter + '.png';
+            for (let i = 0; i < results.length; i++) {
+              let markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
+              let markerIcon = that.state.MARKER_PATH + markerLetter + '.png';
               // Use marker animation to drop the icons incrementally on the map.
-              var infowindow = new google.maps.InfoWindow({
+              let infowindow = new google.maps.InfoWindow({
                 content: '',
               });
               markers[i] = new google.maps.Marker({
@@ -93,7 +93,7 @@ class Main extends React.Component {
                 infoWindow.setContent(infoCont);
                 infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
                 infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
-                var address = '';
+                let address = '';
                 if (marker.placeResult.vicinity) {
                   address = [marker.placeResult.vicinity.split(',')[0] || ''].join(' ');
                 } else if (results[i].vicinity) {
@@ -116,10 +116,10 @@ class Main extends React.Component {
                       if (response.routes[0].legs[0].steps.length === 0) {
                         return;
                       }
-                      var startLatlng = 0,
+                      let startLatlng = 0,
                         endLatlng = 0,
                         distance = 0;
-                      for (var j = 0; j < response.routes[0].legs[0].steps.length; j++) {
+                      for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
                         if (response.routes[0].legs[0].steps[j].distance.value > distance) {
                           distance = response.routes[0].legs[0].steps[j].distance.value;
                           startLatlng = [
@@ -132,7 +132,7 @@ class Main extends React.Component {
                           ];
                         }
                       }
-                      var inBetween = google.maps.geometry.spherical.interpolate(
+                      let inBetween = google.maps.geometry.spherical.interpolate(
                         new google.maps.LatLng(startLatlng[0], startLatlng[1]),
                         new google.maps.LatLng(endLatlng[0], endLatlng[1]),
                         0.5,
@@ -155,10 +155,10 @@ class Main extends React.Component {
 
               markers[i].placeResult = results[i];
               setTimeout(that.dropMarker(i), i * 100);
-              var results1 = document.getElementById('results');
-              var markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
-              var markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
-              var tr = document.createElement('tr');
+              let results1 = document.getElementById('results');
+              markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
+              markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
+              let tr = document.createElement('tr');
 
               // If the user clicks an establishment marker, show the details of that place
               // in an info window.
@@ -168,7 +168,7 @@ class Main extends React.Component {
                 infoWindow.setContent(infoCont);
                 infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
                 infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
-                var address = '';
+                let address = '';
                 if (marker.placeResult.vicinity) {
                   address = [marker.placeResult.vicinity.split(',')[0] || ''].join(' ');
                 } else if (results[i].vicinity) {
@@ -191,10 +191,10 @@ class Main extends React.Component {
                       if (response.routes[0].legs[0].steps.length === 0) {
                         return;
                       }
-                      var startLatlng = 0,
+                      let startLatlng = 0,
                         endLatlng = 0,
                         distance = 0;
-                      for (var j = 0; j < response.routes[0].legs[0].steps.length; j++) {
+                      for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
                         if (response.routes[0].legs[0].steps[j].distance.value > distance) {
                           distance = response.routes[0].legs[0].steps[j].distance.value;
                           startLatlng = [
@@ -207,7 +207,7 @@ class Main extends React.Component {
                           ];
                         }
                       }
-                      var inBetween = google.maps.geometry.spherical.interpolate(
+                      let inBetween = google.maps.geometry.spherical.interpolate(
                         new google.maps.LatLng(startLatlng[0], startLatlng[1]),
                         new google.maps.LatLng(endLatlng[0], endLatlng[1]),
                         0.5,
@@ -228,16 +228,16 @@ class Main extends React.Component {
                 infoWindow.open(map, marker);
               };
 
-              var iconTd = document.createElement('td');
-              var nameTd = document.createElement('td');
-              var icon = document.createElement('img');
-              var addressTd = document.createElement('td');
-              var ratingTd = document.createElement('td');
-              var distanceTd = document.createElement('td');
-              var timeTd = document.createElement('td');
-              var distance = document.createTextNode('');
-              var time = document.createTextNode('');
-              var name = document.createTextNode(results[i].name);
+              let iconTd = document.createElement('td');
+              let nameTd = document.createElement('td');
+              let icon = document.createElement('img');
+              let addressTd = document.createElement('td');
+              let ratingTd = document.createElement('td');
+              let distanceTd = document.createElement('td');
+              let timeTd = document.createElement('td');
+              let distance = document.createTextNode('');
+              let time = document.createTextNode('');
+              let name = document.createTextNode(results[i].name);
 
               icon.src = markerIcon;
               icon.setAttribute('class', 'placeIcon');
@@ -245,13 +245,13 @@ class Main extends React.Component {
               ratingTd.setAttribute('id', `iw-rating${i}`);
               timeTd.setAttribute('id', `iw-time${i}`);
               distanceTd.setAttribute('id', `iw-distance${i}`);
-              var service = new google.maps.DistanceMatrixService();
-              var date = new Date();
-              var DrivingOptions = {
+              let service = new google.maps.DistanceMatrixService();
+              let date = new Date();
+              let DrivingOptions = {
                 departureTime: date,
                 trafficModel: 'pessimistic',
               };
-              var address = '';
+              let address = '';
               if (results[i].vicinity) {
                 address = document.createTextNode(results[i].vicinity.split(',')[0]);
               }
@@ -268,8 +268,8 @@ class Main extends React.Component {
               tr.appendChild(timeTd);
               results1.appendChild(tr);
               if (results[i].rating) {
-                var ratingHtml = '';
-                for (var j = 0; j < 5; j++) {
+                let ratingHtml = '';
+                for (let j = 0; j < 5; j++) {
                   if (results[i].rating < j + 0.5) {
                     ratingHtml += '&#10025;';
                   } else {
@@ -334,7 +334,7 @@ class Main extends React.Component {
       marker.setPosition(place.geometry.location);
       marker.setVisible(true);
 
-      var address = '';
+      let address = '';
       if (place.address_components) {
         address = [
           (place.address_components[0] && place.address_components[0].short_name) || '',
@@ -359,10 +359,10 @@ class Main extends React.Component {
             if (response.routes[0].legs[0].steps.length === 0) {
               return;
             }
-            var startLatlng = 0,
+            let startLatlng = 0,
               endLatlng = 0,
               distance = 0;
-            for (var j = 0; j < response.routes[0].legs[0].steps.length; j++) {
+            for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
               if (response.routes[0].legs[0].steps[j].distance.value > distance) {
                 distance = response.routes[0].legs[0].steps[j].distance.value;
                 startLatlng = [
@@ -375,7 +375,7 @@ class Main extends React.Component {
                 ];
               }
             }
-            var inBetween = google.maps.geometry.spherical.interpolate(
+            let inBetween = google.maps.geometry.spherical.interpolate(
               new google.maps.LatLng(startLatlng[0], startLatlng[1]),
               new google.maps.LatLng(endLatlng[0], endLatlng[1]),
               0.5,
@@ -407,7 +407,7 @@ class Main extends React.Component {
   }
 
   clearMarkers() {
-    for (var i = 0; i < this.state.markers.length; i++) {
+    for (let i = 0; i < this.state.markers.length; i++) {
       if (this.state.markers[i]) {
         this.state.markers[i].setMap(null);
       }
@@ -416,7 +416,7 @@ class Main extends React.Component {
   }
 
   clearResults() {
-    var results = document.getElementById('results');
+    let results = document.getElementById('results');
     while (results.childNodes[0]) {
       results.removeChild(results.childNodes[0]);
     }

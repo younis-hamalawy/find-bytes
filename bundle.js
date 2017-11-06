@@ -21304,15 +21304,13 @@ var Main = function (_React$Component) {
               // Create a marker for each establishment found, and
               // assign a letter of the alphabetic to each marker icon.
 
-              var _loop = function _loop() {
-                markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
-                markerIcon = that.state.MARKER_PATH + markerLetter + '.png';
+              var _loop = function _loop(i) {
+                var markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
+                var markerIcon = that.state.MARKER_PATH + markerLetter + '.png';
                 // Use marker animation to drop the icons incrementally on the map.
-
-                infowindow = new google.maps.InfoWindow({
+                var infowindow = new google.maps.InfoWindow({
                   content: ''
                 });
-
                 markers[i] = new google.maps.Marker({
                   position: results[i].geometry.location,
                   animation: google.maps.Animation.DROP,
@@ -21355,10 +21353,10 @@ var Main = function (_React$Component) {
                       }
                       var startLatlng = 0,
                           endLatlng = 0,
-                          distance = 0;
+                          _distance = 0;
                       for (var j = 0; j < response.routes[0].legs[0].steps.length; j++) {
-                        if (response.routes[0].legs[0].steps[j].distance.value > distance) {
-                          distance = response.routes[0].legs[0].steps[j].distance.value;
+                        if (response.routes[0].legs[0].steps[j].distance.value > _distance) {
+                          _distance = response.routes[0].legs[0].steps[j].distance.value;
                           startLatlng = [response.routes[0].legs[0].steps[j].start_point.lat(), response.routes[0].legs[0].steps[j].start_point.lng()];
                           endLatlng = [response.routes[0].legs[0].steps[j].end_point.lat(), response.routes[0].legs[0].steps[j].end_point.lng()];
                         }
@@ -21376,14 +21374,13 @@ var Main = function (_React$Component) {
 
                 markers[i].placeResult = results[i];
                 setTimeout(that.dropMarker(i), i * 100);
-                results1 = document.getElementById('results');
+                var results1 = document.getElementById('results');
                 markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
                 markerIcon = _this2.state.MARKER_PATH + markerLetter + '.png';
-                tr = document.createElement('tr');
+                var tr = document.createElement('tr');
 
                 // If the user clicks an establishment marker, show the details of that place
                 // in an info window.
-
                 tr.onclick = function () {
                   infoWindow.close();
                   var infoCont = document.getElementById('infoContent') || _this2.state.infoCont;
@@ -21410,10 +21407,10 @@ var Main = function (_React$Component) {
                       }
                       var startLatlng = 0,
                           endLatlng = 0,
-                          distance = 0;
+                          _distance2 = 0;
                       for (var j = 0; j < response.routes[0].legs[0].steps.length; j++) {
-                        if (response.routes[0].legs[0].steps[j].distance.value > distance) {
-                          distance = response.routes[0].legs[0].steps[j].distance.value;
+                        if (response.routes[0].legs[0].steps[j].distance.value > _distance2) {
+                          _distance2 = response.routes[0].legs[0].steps[j].distance.value;
                           startLatlng = [response.routes[0].legs[0].steps[j].start_point.lat(), response.routes[0].legs[0].steps[j].start_point.lng()];
                           endLatlng = [response.routes[0].legs[0].steps[j].end_point.lat(), response.routes[0].legs[0].steps[j].end_point.lng()];
                         }
@@ -21429,17 +21426,16 @@ var Main = function (_React$Component) {
                   infoWindow.open(map, marker);
                 };
 
-                iconTd = document.createElement('td');
-                nameTd = document.createElement('td');
-                icon = document.createElement('img');
-                addressTd = document.createElement('td');
-                ratingTd = document.createElement('td');
-                distanceTd = document.createElement('td');
-                timeTd = document.createElement('td');
-                distance = document.createTextNode('');
-                time = document.createTextNode('');
-                name = document.createTextNode(results[i].name);
-
+                var iconTd = document.createElement('td');
+                var nameTd = document.createElement('td');
+                var icon = document.createElement('img');
+                var addressTd = document.createElement('td');
+                var ratingTd = document.createElement('td');
+                var distanceTd = document.createElement('td');
+                var timeTd = document.createElement('td');
+                var distance = document.createTextNode('');
+                var time = document.createTextNode('');
+                var name = document.createTextNode(results[i].name);
 
                 icon.src = markerIcon;
                 icon.setAttribute('class', 'placeIcon');
@@ -21447,14 +21443,13 @@ var Main = function (_React$Component) {
                 ratingTd.setAttribute('id', 'iw-rating' + i);
                 timeTd.setAttribute('id', 'iw-time' + i);
                 distanceTd.setAttribute('id', 'iw-distance' + i);
-                service = new google.maps.DistanceMatrixService();
-                date = new Date();
-                DrivingOptions = {
+                var service = new google.maps.DistanceMatrixService();
+                var date = new Date();
+                var DrivingOptions = {
                   departureTime: date,
                   trafficModel: 'pessimistic'
                 };
-                address = '';
-
+                var address = '';
                 if (results[i].vicinity) {
                   address = document.createTextNode(results[i].vicinity.split(',')[0]);
                 }
@@ -21471,9 +21466,8 @@ var Main = function (_React$Component) {
                 tr.appendChild(timeTd);
                 results1.appendChild(tr);
                 if (results[i].rating) {
-                  ratingHtml = '';
-
-                  for (j = 0; j < 5; j++) {
+                  var ratingHtml = '';
+                  for (var j = 0; j < 5; j++) {
                     if (results[i].rating < j + 0.5) {
                       ratingHtml += '&#10025;';
                     } else {
@@ -21508,31 +21502,7 @@ var Main = function (_React$Component) {
               };
 
               for (var i = 0; i < results.length; i++) {
-                var markerLetter;
-                var markerIcon;
-                var infowindow;
-                var results1;
-                var markerLetter;
-                var markerIcon;
-                var tr;
-                var iconTd;
-                var nameTd;
-                var icon;
-                var addressTd;
-                var ratingTd;
-                var distanceTd;
-                var timeTd;
-                var distance;
-                var time;
-                var name;
-                var service;
-                var date;
-                var DrivingOptions;
-                var address;
-                var ratingHtml;
-                var j;
-
-                _loop();
+                _loop(i);
               }
               that.setState({ markers: markers });
             }
@@ -21580,10 +21550,10 @@ var Main = function (_React$Component) {
             }
             var startLatlng = 0,
                 endLatlng = 0,
-                distance = 0;
+                _distance3 = 0;
             for (var j = 0; j < response.routes[0].legs[0].steps.length; j++) {
-              if (response.routes[0].legs[0].steps[j].distance.value > distance) {
-                distance = response.routes[0].legs[0].steps[j].distance.value;
+              if (response.routes[0].legs[0].steps[j].distance.value > _distance3) {
+                _distance3 = response.routes[0].legs[0].steps[j].distance.value;
                 startLatlng = [response.routes[0].legs[0].steps[j].start_point.lat(), response.routes[0].legs[0].steps[j].start_point.lng()];
                 endLatlng = [response.routes[0].legs[0].steps[j].end_point.lat(), response.routes[0].legs[0].steps[j].end_point.lng()];
               }

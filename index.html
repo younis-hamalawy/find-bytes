@@ -22,11 +22,12 @@
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
         center: {
-          lat: 24.90049929,
+          lat: 44.90049929,
           lng: -24.01349449
         },
         zoom: 3
       });
+      google.maps.event.trigger(map, "resize");
       initialInfoWindow = new google.maps.InfoWindow;
 
       // Try HTML5 geolocation.
@@ -53,6 +54,7 @@
         // Browser doesn 't support Geolocation
         handleLocationError(false, initialInfoWindow, map.getCenter());
       }
+      google.maps.event.trigger(map, "resize");
     }
 
     function handleLocationError(browserHasGeolocation, initialInfoWindow, pos) {
