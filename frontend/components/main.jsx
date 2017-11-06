@@ -74,7 +74,13 @@ class Main extends React.Component {
                 icon: markerIcon
               });
               let marker = markers[i];
-
+              if (marker) {
+                let listing = document.getElementById('listing');
+                listing.style.padding = "15px 0 15px 15px";
+                listing.style.border = "1px solid #626962";
+                listing.style.boxShadow = "inset 0 0 0 1px #272727";
+                listing.style.width = "488px";
+              };
               // If the user clicks an establishment marker, show the details of that place
               // in an info window.
               google.maps.event.addListener(marker, 'click', () => {
@@ -349,18 +355,14 @@ class Main extends React.Component {
   render() {
     return (
       <div>
-        <div className="pac-card" id="pac-card">
-          <div>
-            <div id="title">
-              goFind!
-            </div>
-            <div id="strict-bounds-selector" className="pac-controls">
-              <input type="checkbox" id="use-strict-bounds" defaultValue />
-              <label htmlFor="use-strict-bounds">Search within the window</label>
-            </div>
+        <div id="pac-card">
+          <div id="title">
+            <p id="para">goFind!</p>
           </div>
           <div id="pac-container">
             <input id="pac-input" type="text" placeholder="What are you looking for?" />
+            <p>Search within</p>
+            <input type="checkbox" id="use-strict-bounds"/>
           </div>
           <div id="listing">
             <table id="resultsTable">

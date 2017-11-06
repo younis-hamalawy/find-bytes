@@ -21316,7 +21316,13 @@ var Main = function (_React$Component) {
                   icon: markerIcon
                 });
                 var marker = markers[i];
-
+                if (marker) {
+                  var listing = document.getElementById('listing');
+                  listing.style.padding = "15px 0 15px 15px";
+                  listing.style.border = "1px solid #626962";
+                  listing.style.boxShadow = "inset 0 0 0 1px #272727";
+                  listing.style.width = "488px";
+                };
                 // If the user clicks an establishment marker, show the details of that place
                 // in an info window.
                 google.maps.event.addListener(marker, 'click', function () {
@@ -21624,30 +21630,26 @@ var Main = function (_React$Component) {
         null,
         _react2.default.createElement(
           'div',
-          { className: 'pac-card', id: 'pac-card' },
+          { id: 'pac-card' },
           _react2.default.createElement(
             'div',
-            null,
+            { id: 'title' },
             _react2.default.createElement(
-              'div',
-              { id: 'title' },
+              'p',
+              { id: 'para' },
               'goFind!'
-            ),
-            _react2.default.createElement(
-              'div',
-              { id: 'strict-bounds-selector', className: 'pac-controls' },
-              _react2.default.createElement('input', { type: 'checkbox', id: 'use-strict-bounds', defaultValue: true }),
-              _react2.default.createElement(
-                'label',
-                { htmlFor: 'use-strict-bounds' },
-                'Search within the window'
-              )
             )
           ),
           _react2.default.createElement(
             'div',
             { id: 'pac-container' },
-            _react2.default.createElement('input', { id: 'pac-input', type: 'text', placeholder: 'What are you looking for?' })
+            _react2.default.createElement('input', { id: 'pac-input', type: 'text', placeholder: 'What are you looking for?' }),
+            _react2.default.createElement(
+              'p',
+              null,
+              'Search within'
+            ),
+            _react2.default.createElement('input', { type: 'checkbox', id: 'use-strict-bounds' })
           ),
           _react2.default.createElement(
             'div',
