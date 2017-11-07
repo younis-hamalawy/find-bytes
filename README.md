@@ -10,7 +10,7 @@ goFind! is a single page web app developed using React.js, Google Maps JavaScrip
 
 * React
 
-## APIs and Libraries
+## APIs
 
 * Google Maps JavaScript API.
 * Google Places API.
