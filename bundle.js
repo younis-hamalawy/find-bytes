@@ -21373,7 +21373,7 @@ var Main = function (_React$Component) {
                 });
 
                 markers[i].placeResult = results[i];
-                setTimeout(that.dropMarker(i), i * 100);
+
                 var results1 = document.getElementById('results');
                 markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
                 markerIcon = _this2.state.MARKER_PATH + markerLetter + '.png';
@@ -21505,6 +21505,9 @@ var Main = function (_React$Component) {
                 _loop(i);
               }
               that.setState({ markers: markers });
+              for (var i = 0; i < results.length; i++) {
+                setTimeout(that.dropMarker(i), i * 100);
+              }
             }
           };
           that.service.nearbySearch(request, callback);

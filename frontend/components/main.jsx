@@ -154,7 +154,7 @@ class Main extends React.Component {
               });
 
               markers[i].placeResult = results[i];
-              setTimeout(that.dropMarker(i), i * 100);
+
               let results1 = document.getElementById('results');
               markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
               markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
@@ -310,6 +310,9 @@ class Main extends React.Component {
               );
             }
             that.setState({ markers });
+            for (let i = 0; i < results.length; i++) {
+              setTimeout(that.dropMarker(i), i * 100);
+            }
           }
         };
         that.service.nearbySearch(request, callback);
