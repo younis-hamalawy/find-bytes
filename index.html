@@ -16,7 +16,7 @@
   <div id='root'></div>
   <div id="map"></div>
   <script>
-    let map, initialInfoWindow, pos;
+    var map, initialInfoWindow, pos;
 
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
@@ -42,7 +42,7 @@
           initialInfoWindow.open(map);
           map.setCenter(pos);
           map.setZoom(15);
-          let marker = new google.maps.Marker({
+          var marker = new google.maps.Marker({
             position: pos,
             map: map
           });
