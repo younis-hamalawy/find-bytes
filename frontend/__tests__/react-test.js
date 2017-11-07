@@ -1,9 +1,7 @@
 import ReactDOM from 'react-dom';
 
 describe('entry', () => {
-  let Entry,
-      Root,
-      renderedRoot;
+  let Entry, Root, renderedRoot;
 
   beforeAll(() => {
     document.addEventListener = jest.fn();
@@ -11,7 +9,7 @@ describe('entry', () => {
     ReactDOM.render = jest.fn();
 
     Root = require('../components/root');
-    Entry = require('../find_bytes.jsx');
+    Entry = require('../gofind.jsx');
 
     // invoke the callback passed to document.addEventListener
     document.addEventListener.mock.calls[0][1]();
@@ -31,9 +29,9 @@ describe('entry', () => {
   });
 
   it('queries for and renders into the root div', () => {
-    expect(document.getElementById).toBeCalledWith("root");
+    expect(document.getElementById).toBeCalledWith('root');
 
     // testing that the second arugument passed to `render` is the root div
-    expect(ReactDOM.render.mock.calls[0][1]).toEqual("root");
+    expect(ReactDOM.render.mock.calls[0][1]).toEqual('root');
   });
 });
