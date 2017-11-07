@@ -21370,6 +21370,13 @@ var Main = function (_React$Component) {
                     }
                   });
                   infoWindow.open(map, marker);
+                  google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
+                    if (this.getZoom() > 15) {
+                      this.setZoom(15);
+                      this.setCenter(infowindow2.getPosition());
+                      map.panBy(0, -200);
+                    }
+                  });
                 });
 
                 markers[i].placeResult = results[i];
@@ -21426,6 +21433,13 @@ var Main = function (_React$Component) {
                     });
                   }
                   infoWindow.open(map, marker);
+                  google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
+                    if (this.getZoom() > 15) {
+                      this.setZoom(15);
+                      this.setCenter(infowindow2.getPosition());
+                      map.panBy(0, -200);
+                    }
+                  });
                 };
 
                 var iconTd = document.createElement('td');
@@ -21576,6 +21590,13 @@ var Main = function (_React$Component) {
         }
 
         infoWindow.open(map, marker);
+        google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
+          if (this.getZoom() > 15) {
+            this.setZoom(15);
+            this.setCenter(infowindow2.getPosition());
+            map.panBy(0, -200);
+          }
+        });
       });
 
       document.getElementById('use-strict-bounds').addEventListener('click', function () {

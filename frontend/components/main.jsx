@@ -151,6 +151,13 @@ class Main extends React.Component {
                   },
                 );
                 infoWindow.open(map, marker);
+                google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
+                  if (this.getZoom() > 15) {
+                    this.setZoom(15);
+                    this.setCenter(infowindow2.getPosition());
+                    map.panBy(0, -200);
+                  }
+                });
               });
 
               markers[i].placeResult = results[i];
@@ -228,6 +235,13 @@ class Main extends React.Component {
                   );
                 }
                 infoWindow.open(map, marker);
+                google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
+                  if (this.getZoom() > 15) {
+                    this.setZoom(15);
+                    this.setCenter(infowindow2.getPosition());
+                    map.panBy(0, -200);
+                  }
+                });
               };
 
               let iconTd = document.createElement('td');
@@ -400,6 +414,13 @@ class Main extends React.Component {
       }
 
       infoWindow.open(map, marker);
+      google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
+        if (this.getZoom() > 15) {
+          this.setZoom(15);
+          this.setCenter(infowindow2.getPosition());
+          map.panBy(0, -200);
+        }
+      });
     });
 
     document.getElementById('use-strict-bounds').addEventListener('click', function() {
