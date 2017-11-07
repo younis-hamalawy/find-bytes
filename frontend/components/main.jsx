@@ -294,22 +294,23 @@ class Main extends React.Component {
                   document.getElementById(`iw-distance${x}`).innerHTML = distance;
                 }
               };
-
-              service.getDistanceMatrix(
-                {
-                  origins: [pos],
-                  destinations: [
-                    new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng()),
-                  ],
-                  travelMode: 'BICYCLING',
-                  drivingOptions: DrivingOptions,
-                  unitSystem: google.maps.UnitSystem.Imperical,
-                  // duration_in_traffic: true,
-                  avoidHighways: false,
-                  avoidTolls: false,
-                },
-                response_data,
-              );
+              if (pos) {
+                service.getDistanceMatrix(
+                  {
+                    origins: [pos],
+                    destinations: [
+                      new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng()),
+                    ],
+                    travelMode: 'BICYCLING',
+                    drivingOptions: DrivingOptions,
+                    unitSystem: google.maps.UnitSystem.Imperical,
+                    // duration_in_traffic: true,
+                    avoidHighways: false,
+                    avoidTolls: false,
+                  },
+                  response_data,
+                );
+              }
             }
             that.setState({ markers });
             for (let i = 0; i < results.length; i++) {
