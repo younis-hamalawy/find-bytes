@@ -123,6 +123,9 @@ let inBetween = google.maps.geometry.spherical.interpolate(
 );
 infowindow2.setPosition(inBetween);
 ```
+### Search Within checkbox
+
+Restrict search for both the Autocomplete and the query search to within the bounds of the visible portion of the map.
 
 ### Search Autocomplete
 
