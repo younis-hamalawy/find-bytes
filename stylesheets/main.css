@@ -63,7 +63,7 @@ body {
 #pac-card {
   flex: 0 1 50%;
   text-align: center;
-  background: #ffffffa3;
+  background: rgba(255, 255, 255, 0.6);
   position: relative;
   text-align: center;
   width: 100%;

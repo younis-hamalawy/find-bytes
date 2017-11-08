@@ -37,8 +37,6 @@ class Main extends React.Component {
     let directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
     let infowindow2 = new google.maps.InfoWindow();
 
-    let that = this;
-
     autocomplete.addListener('place_changed', () => {
       infoWindow.close();
       let place = autocomplete.getPlace();
@@ -55,18 +53,18 @@ class Main extends React.Component {
           keyword: input.value,
           bounds: map.getBounds(),
         };
-        that.service = new google.maps.places.PlacesService(map);
+        this.service = new google.maps.places.PlacesService(map);
         const callback = (results, status) => {
           if (status == google.maps.places.PlacesServiceStatus.OK) {
-            that.clearResults();
-            that.clearMarkers();
+            this.clearResults();
+            this.clearMarkers();
             let markers = [];
             marker.setVisible(false);
             // Create a marker for each establishment found, and
             // assign a letter of the alphabetic to each marker icon.
             for (let i = 0; i < results.length; i++) {
               let markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
-              let markerIcon = that.state.MARKER_PATH + markerLetter + '.png';
+              let markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
               // Use marker animation to drop the icons incrementally on the map.
               let infowindow = new google.maps.InfoWindow({
                 content: '',
@@ -326,20 +324,20 @@ class Main extends React.Component {
                 );
               }
             }
-            that.setState({ markers });
+            this.setState({ markers });
             for (let i = 0; i < results.length; i++) {
-              setTimeout(that.dropMarker(i), i * 100);
+              setTimeout(this.dropMarker(i), i * 100);
             }
           }
         };
-        that.service.nearbySearch(request, callback);
+        this.service.nearbySearch(request, callback);
         return;
       }
 
       // If the place has a geometry, then present it on a map.
       if (place.geometry.viewport) {
-        that.clearResults();
-        that.clearMarkers();
+        this.clearResults();
+        this.clearMarkers();
         let listing = document.getElementById('listing');
         listing.style.padding = '0';
         listing.style.border = 'none';

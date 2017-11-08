@@ -21276,8 +21276,6 @@ var Main = function (_React$Component) {
       var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
       var infowindow2 = new google.maps.InfoWindow();
 
-      var that = this;
-
       autocomplete.addListener('place_changed', function () {
         infoWindow.close();
         var place = autocomplete.getPlace();
@@ -21294,11 +21292,11 @@ var Main = function (_React$Component) {
             keyword: input.value,
             bounds: map.getBounds()
           };
-          that.service = new google.maps.places.PlacesService(map);
+          _this2.service = new google.maps.places.PlacesService(map);
           var callback = function callback(results, status) {
             if (status == google.maps.places.PlacesServiceStatus.OK) {
-              that.clearResults();
-              that.clearMarkers();
+              _this2.clearResults();
+              _this2.clearMarkers();
               var markers = [];
               marker.setVisible(false);
               // Create a marker for each establishment found, and
@@ -21306,7 +21304,7 @@ var Main = function (_React$Component) {
 
               var _loop = function _loop(i) {
                 var markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
-                var markerIcon = that.state.MARKER_PATH + markerLetter + '.png';
+                var markerIcon = _this2.state.MARKER_PATH + markerLetter + '.png';
                 // Use marker animation to drop the icons incrementally on the map.
                 var infowindow = new google.maps.InfoWindow({
                   content: ''
@@ -21521,20 +21519,20 @@ var Main = function (_React$Component) {
               for (var i = 0; i < results.length; i++) {
                 _loop(i);
               }
-              that.setState({ markers: markers });
+              _this2.setState({ markers: markers });
               for (var i = 0; i < results.length; i++) {
-                setTimeout(that.dropMarker(i), i * 100);
+                setTimeout(_this2.dropMarker(i), i * 100);
               }
             }
           };
-          that.service.nearbySearch(request, callback);
+          _this2.service.nearbySearch(request, callback);
           return;
         }
 
         // If the place has a geometry, then present it on a map.
         if (place.geometry.viewport) {
-          that.clearResults();
-          that.clearMarkers();
+          _this2.clearResults();
+          _this2.clearMarkers();
           var listing = document.getElementById('listing');
           listing.style.padding = '0';
           listing.style.border = 'none';
