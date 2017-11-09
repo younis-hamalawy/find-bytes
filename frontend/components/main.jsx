@@ -15,38 +15,44 @@ class Main extends React.Component {
   }
 
   componentDidMount() {
-    let card = document.getElementById('pac-card');
-    let input = document.getElementById('pac-input');
-    let strictBounds = document.getElementById('strict-bounds-selector');
+    const card = document.getElementById('pac-card');
+    const input = document.getElementById('pac-input');
+    const strictBounds = document.getElementById('strict-bounds-selector');
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
-    let autocomplete = new google.maps.places.Autocomplete(input);
+    const autocomplete = new google.maps.places.Autocomplete(input);
 
     // Bind the map's bounds (viewport) property to the autocomplete object,
     // so that the autocomplete requests use the current map bounds for the
     // bounds option in the request.
     autocomplete.bindTo('bounds', map);
-    let infoWindow = new google.maps.InfoWindow();
-    let infoCont = document.getElementById('infoContent');
-    this.setState({ infoCont: document.getElementById('infoContent') });
+    const infoWindow = new google.maps.InfoWindow();
+    const infoCont = document.getElementById('infoContent');
+    this.setState({
+      infoCont: document.getElementById('infoContent'),
+    });
     infoWindow.setContent(infoCont);
-    let marker = new google.maps.Marker({
-      map: map,
+    const marker = new google.maps.Marker({
+      map,
       anchorPoint: new google.maps.Point(0, -29),
     });
-    let directionsService = new google.maps.DirectionsService();
-    let directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
-    let infowindow2 = new google.maps.InfoWindow();
+    const directionsService = new google.maps.DirectionsService();
+    const directionsDisplay = new google.maps.DirectionsRenderer({
+      suppressMarkers: true,
+    });
+    const infowindow2 = new google.maps.InfoWindow();
 
     autocomplete.addListener('place_changed', () => {
       infoWindow.close();
-      let place = autocomplete.getPlace();
+      const place = autocomplete.getPlace();
       if (!place.geometry) {
         // User entered the name of a Place that was not suggested and
         // pressed the Enter key, or the Place Details request failed.
         infowindow2.close();
-        directionsDisplay.setDirections({ routes: [] });
+        directionsDisplay.setDirections({
+          routes: [],
+        });
         directionsDisplay.setMap(map);
-        let request = {
+        const request = {
           location: map.center,
           radius: '500',
           query: input.value,
@@ -58,15 +64,15 @@ class Main extends React.Component {
           if (status == google.maps.places.PlacesServiceStatus.OK) {
             this.clearResults();
             this.clearMarkers();
-            let markers = [];
+            const markers = [];
             marker.setVisible(false);
             // Create a marker for each establishment found, and
             // assign a letter of the alphabetic to each marker icon.
             for (let i = 0; i < results.length; i++) {
               let markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
-              let markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
+              let markerIcon = `${this.state.MARKER_PATH + markerLetter}.png`;
               // Use marker animation to drop the icons incrementally on the map.
-              let infowindow = new google.maps.InfoWindow({
+              const infowindow = new google.maps.InfoWindow({
                 content: '',
               });
               markers[i] = new google.maps.Marker({
@@ -74,9 +80,9 @@ class Main extends React.Component {
                 animation: google.maps.Animation.DROP,
                 icon: markerIcon,
               });
-              let marker = markers[i];
+              const marker = markers[i];
               if (marker) {
-                let listing = document.getElementById('listing');
+                const listing = document.getElementById('listing');
                 listing.style.padding = '1em 0 1em 1em';
                 listing.style.border = '0.1em solid #626962';
                 listing.style.boxShadow = 'inset 0 0 0 0.1em #272727';
@@ -87,7 +93,7 @@ class Main extends React.Component {
               // in an info window.
               google.maps.event.addListener(marker, 'click', () => {
                 infoWindow.close();
-                let infoCont = document.getElementById('infoContent') || this.state.infoCont;
+                const infoCont = document.getElementById('infoContent') || this.state.infoCont;
                 infoWindow.setContent(infoCont);
                 infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
                 infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
@@ -100,7 +106,88 @@ class Main extends React.Component {
                 infoCont.children['place-address'].textContent = address;
 
                 directionsService.route(
-                  {
+{
+                  origin: pos,
+                  destination: new google.maps.LatLng(
+                    marker.placeResult.geometry.location.lat(),
+                    marker.placeResult.geometry.location.lng(),
+                  ),
+                  travelMode: 'BICYCLING',
+                },
+                (response, status) => {
+                  if (status === 'OK') {
+                    directionsDisplay.setDirections(response);
+                    if (response.routes[0].legs[0].steps.length === 0) {
+                      return;
+                    }
+                    let startLatlng = 0,
+                      endLatlng = 0,
+                      distance = 0;
+                    for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
+                      if (response.routes[0].legs[0].steps[j].distance.value > distance) {
+                        distance = response.routes[0].legs[0].steps[j].distance.value;
+                        startLatlng = [
+                          response.routes[0].legs[0].steps[j].start_point.lat(),
+                          response.routes[0].legs[0].steps[j].start_point.lng(),
+                        ];
+                        endLatlng = [
+                          response.routes[0].legs[0].steps[j].end_point.lat(),
+                          response.routes[0].legs[0].steps[j].end_point.lng(),
+                        ];
+                      }
+                    }
+                    const inBetween = google.maps.geometry.spherical.interpolate(
+                      new google.maps.LatLng(startLatlng[0], startLatlng[1]),
+                      new google.maps.LatLng(endLatlng[0], endLatlng[1]),
+                      0.5,
+                    );
+                    infowindow2.setPosition(inBetween);
+                    infowindow2.setContent(`${response.routes[0].legs[0].distance.text
+                    }<br>${
+                      response.routes[0].legs[0].duration.text
+                    } `);
+                    infowindow2.open(map);
+                  } else {
+                    window.alert(`Directions request failed due to ${status}`);
+                  }
+                },
+                );
+                infoWindow.open(map, marker);
+                google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
+                  if (this.getZoom() > 15) {
+                    this.setZoom(15);
+                    this.setCenter(infowindow2.getPosition());
+                    map.panBy(0, -200);
+                  }
+                });
+              });
+
+              markers[i].placeResult = results[i];
+
+              const results1 = document.getElementById('results');
+              markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
+              markerIcon = `${this.state.MARKER_PATH + markerLetter}.png`;
+              const tr = document.createElement('tr');
+
+              // If the user clicks an establishment marker, show the details of that place
+              // in an info window.
+              tr.onclick = () => {
+                infoWindow.close();
+                const infoCont = document.getElementById('infoContent') || this.state.infoCont;
+                infoWindow.setContent(infoCont);
+                infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
+                infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
+                let address = '';
+                if (marker.placeResult.vicinity) {
+                  address = [marker.placeResult.vicinity.split(',')[0] || ''].join(' ');
+                } else if (results[i].vicinity) {
+                  address = [results[i].vicinity.split(',')[0] || ''].join(' ');
+                }
+                infoCont.children['place-address'].textContent = address;
+
+                if (pos) {
+                  directionsService.route(
+{
                     origin: pos,
                     destination: new google.maps.LatLng(
                       marker.placeResult.geometry.location.lat(),
@@ -108,7 +195,7 @@ class Main extends React.Component {
                     ),
                     travelMode: 'BICYCLING',
                   },
-                  function(response, status) {
+                  (response, status) => {
                     if (status === 'OK') {
                       directionsDisplay.setDirections(response);
                       if (response.routes[0].legs[0].steps.length === 0) {
@@ -130,110 +217,25 @@ class Main extends React.Component {
                           ];
                         }
                       }
-                      let inBetween = google.maps.geometry.spherical.interpolate(
+                      const inBetween = google.maps.geometry.spherical.interpolate(
                         new google.maps.LatLng(startLatlng[0], startLatlng[1]),
                         new google.maps.LatLng(endLatlng[0], endLatlng[1]),
                         0.5,
                       );
                       infowindow2.setPosition(inBetween);
-                      infowindow2.setContent(
-                        response.routes[0].legs[0].distance.text +
-                          '<br>' +
-                          response.routes[0].legs[0].duration.text +
-                          ' ',
-                      );
+                      infowindow2.setContent(`${response.routes[0].legs[0].distance.text
+                      }<br>${
+                        response.routes[0].legs[0].duration.text
+                      } `);
                       infowindow2.open(map);
                     } else {
-                      window.alert('Directions request failed due to ' + status);
+                      window.alert(`Directions request failed due to ${ status}`);
                     }
                   },
-                );
-                infoWindow.open(map, marker);
-                google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
-                  if (this.getZoom() > 15) {
-                    this.setZoom(15);
-                    this.setCenter(infowindow2.getPosition());
-                    map.panBy(0, -200);
-                  }
-                });
-              });
-
-              markers[i].placeResult = results[i];
-
-              let results1 = document.getElementById('results');
-              markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
-              markerIcon = this.state.MARKER_PATH + markerLetter + '.png';
-              let tr = document.createElement('tr');
-
-              // If the user clicks an establishment marker, show the details of that place
-              // in an info window.
-              tr.onclick = () => {
-                infoWindow.close();
-                let infoCont = document.getElementById('infoContent') || this.state.infoCont;
-                infoWindow.setContent(infoCont);
-                infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
-                infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
-                let address = '';
-                if (marker.placeResult.vicinity) {
-                  address = [marker.placeResult.vicinity.split(',')[0] || ''].join(' ');
-                } else if (results[i].vicinity) {
-                  address = [results[i].vicinity.split(',')[0] || ''].join(' ');
-                }
-                infoCont.children['place-address'].textContent = address;
-
-                if (pos) {
-                  directionsService.route(
-                    {
-                      origin: pos,
-                      destination: new google.maps.LatLng(
-                        marker.placeResult.geometry.location.lat(),
-                        marker.placeResult.geometry.location.lng(),
-                      ),
-                      travelMode: 'BICYCLING',
-                    },
-                    function(response, status) {
-                      if (status === 'OK') {
-                        directionsDisplay.setDirections(response);
-                        if (response.routes[0].legs[0].steps.length === 0) {
-                          return;
-                        }
-                        let startLatlng = 0,
-                          endLatlng = 0,
-                          distance = 0;
-                        for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
-                          if (response.routes[0].legs[0].steps[j].distance.value > distance) {
-                            distance = response.routes[0].legs[0].steps[j].distance.value;
-                            startLatlng = [
-                              response.routes[0].legs[0].steps[j].start_point.lat(),
-                              response.routes[0].legs[0].steps[j].start_point.lng(),
-                            ];
-                            endLatlng = [
-                              response.routes[0].legs[0].steps[j].end_point.lat(),
-                              response.routes[0].legs[0].steps[j].end_point.lng(),
-                            ];
-                          }
-                        }
-                        let inBetween = google.maps.geometry.spherical.interpolate(
-                          new google.maps.LatLng(startLatlng[0], startLatlng[1]),
-                          new google.maps.LatLng(endLatlng[0], endLatlng[1]),
-                          0.5,
-                        );
-                        infowindow2.setPosition(inBetween);
-                        infowindow2.setContent(
-                          response.routes[0].legs[0].distance.text +
-                            '<br>' +
-                            response.routes[0].legs[0].duration.text +
-                            ' ',
-                        );
-                        infowindow2.open(map);
-                      } else {
-                        window.alert('Directions request failed due to ' + status);
-                      }
-                    },
                   );
                 }
                 infoWindow.open(map, marker);
-                google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
+                google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
                   if (this.getZoom() > 15) {
                     this.setZoom(15);
                     this.setCenter(infowindow2.getPosition());
@@ -242,16 +244,16 @@ class Main extends React.Component {
                 });
               };
 
-              let iconTd = document.createElement('td');
-              let nameTd = document.createElement('td');
-              let icon = document.createElement('img');
-              let addressTd = document.createElement('td');
-              let ratingTd = document.createElement('td');
-              let distanceTd = document.createElement('td');
-              let timeTd = document.createElement('td');
+              const iconTd = document.createElement('td');
+              const nameTd = document.createElement('td');
+              const icon = document.createElement('img');
+              const addressTd = document.createElement('td');
+              const ratingTd = document.createElement('td');
+              const distanceTd = document.createElement('td');
+              const timeTd = document.createElement('td');
               let distance = document.createTextNode('');
               let time = document.createTextNode('');
-              let name = document.createTextNode(results[i].name);
+              const name = document.createTextNode(results[i].name);
 
               icon.src = markerIcon;
               icon.setAttribute('class', 'placeIcon');
@@ -259,9 +261,9 @@ class Main extends React.Component {
               ratingTd.setAttribute('id', `iw-rating${i}`);
               timeTd.setAttribute('id', `iw-time${i}`);
               distanceTd.setAttribute('id', `iw-distance${i}`);
-              let service = new google.maps.DistanceMatrixService();
-              let date = new Date();
-              let DrivingOptions = {
+              const service = new google.maps.DistanceMatrixService();
+              const date = new Date();
+              const DrivingOptions = {
                 departureTime: date,
                 trafficModel: 'pessimistic',
               };
@@ -293,38 +295,40 @@ class Main extends React.Component {
                 }
               }
 
-              let x = i;
+              const x = i;
               const response_data = (responseDis, status) => {
                 if (status !== google.maps.DistanceMatrixStatus.OK || status != 'OK') {
                   console.log('Error:', status);
                 } else {
                   time = responseDis.rows[0].elements[0].duration.text;
                   distance =
-                    (parseFloat(responseDis.rows[0].elements[0].distance.text.split(' ')[0]) / 1.6).toFixed(1) +
-                    ' mile';
+                    `${(parseFloat(responseDis.rows[0].elements[0].distance.text.split(' ')[0]) / 1.6).toFixed(1)
+                    } mile`;
                   document.getElementById(`iw-time${x}`).innerHTML = time;
                   document.getElementById(`iw-distance${x}`).innerHTML = distance;
                 }
               };
               if (pos) {
                 service.getDistanceMatrix(
-                  {
-                    origins: [pos],
-                    destinations: [
-                      new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng()),
-                    ],
-                    travelMode: 'BICYCLING',
-                    drivingOptions: DrivingOptions,
-                    unitSystem: google.maps.UnitSystem.Imperical,
-                    // duration_in_traffic: true,
-                    avoidHighways: false,
-                    avoidTolls: false,
-                  },
-                  response_data,
+{
+                  origins: [pos],
+                  destinations: [
+                    new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng()),
+                  ],
+                  travelMode: 'BICYCLING',
+                  drivingOptions: DrivingOptions,
+                  unitSystem: google.maps.UnitSystem.Imperical,
+                  // duration_in_traffic: true,
+                  avoidHighways: false,
+                  avoidTolls: false,
+                },
+                response_data,
                 );
               }
             }
-            this.setState({ markers });
+            this.setState({
+              markers,
+            });
             for (let i = 0; i < results.length; i++) {
               setTimeout(this.dropMarker(i), i * 100);
             }
@@ -338,7 +342,7 @@ class Main extends React.Component {
       if (place.geometry.viewport) {
         this.clearResults();
         this.clearMarkers();
-        let listing = document.getElementById('listing');
+        const listing = document.getElementById('listing');
         listing.style.padding = '0';
         listing.style.border = 'none';
         listing.style.boxShadow = 'none';
@@ -366,53 +370,51 @@ class Main extends React.Component {
       infoCont.children['place-address'].textContent = address;
       if (pos) {
         directionsService.route(
-          {
-            origin: pos,
-            destination: new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng()),
-            travelMode: 'BICYCLING',
-          },
-          function(response, status) {
-            if (status === 'OK') {
-              directionsDisplay.setMap(map);
-              directionsDisplay.setDirections(response);
-              if (response.routes[0].legs[0].steps.length === 0) {
-                return;
-              }
-              let startLatlng = 0,
-                endLatlng = 0,
-                distance = 0;
-              for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
-                if (response.routes[0].legs[0].steps[j].distance.value > distance) {
-                  distance = response.routes[0].legs[0].steps[j].distance.value;
-                  startLatlng = [
-                    response.routes[0].legs[0].steps[j].start_point.lat(),
-                    response.routes[0].legs[0].steps[j].start_point.lng(),
-                  ];
-                  endLatlng = [
-                    response.routes[0].legs[0].steps[j].end_point.lat(),
-                    response.routes[0].legs[0].steps[j].end_point.lng(),
-                  ];
-                }
-              }
-              let inBetween = google.maps.geometry.spherical.interpolate(
-                new google.maps.LatLng(startLatlng[0], startLatlng[1]),
-                new google.maps.LatLng(endLatlng[0], endLatlng[1]),
-                0.5,
-              );
-              infowindow2.setPosition(inBetween);
-              infowindow2.setContent(
-                response.routes[0].legs[0].distance.text + '<br>' + response.routes[0].legs[0].duration.text + ' ',
-              );
-              infowindow2.open(map);
-            } else {
-              window.alert('Directions request failed due to ' + status);
+{
+          origin: pos,
+          destination: new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng()),
+          travelMode: 'BICYCLING',
+        },
+        (response, status) => {
+          if (status === 'OK') {
+            directionsDisplay.setMap(map);
+            directionsDisplay.setDirections(response);
+            if (response.routes[0].legs[0].steps.length === 0) {
+              return;
             }
-          },
+            let startLatlng = 0;
+            let endLatlng = 0;
+            let distance = 0;
+            for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
+              if (response.routes[0].legs[0].steps[j].distance.value > distance) {
+                distance = response.routes[0].legs[0].steps[j].distance.value;
+                startLatlng = [
+                  response.routes[0].legs[0].steps[j].start_point.lat(),
+                  response.routes[0].legs[0].steps[j].start_point.lng(),
+                ];
+                endLatlng = [
+                  response.routes[0].legs[0].steps[j].end_point.lat(),
+                  response.routes[0].legs[0].steps[j].end_point.lng(),
+                ];
+              }
+            }
+            const inBetween = google.maps.geometry.spherical.interpolate(
+              new google.maps.LatLng(startLatlng[0], startLatlng[1]),
+              new google.maps.LatLng(endLatlng[0], endLatlng[1]),
+              0.5,
+            );
+            infowindow2.setPosition(inBetween);
+            infowindow2.setContent(`${response.routes[0].legs[0].distance.text }<br>${ response.routes[0].legs[0].duration.text} `);
+            infowindow2.open(map);
+          } else {
+            window.alert(`Directions request failed due to ${status}`);
+          }
+        },
         );
       }
 
       infoWindow.open(map, marker);
-      google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
+      google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
         if (this.getZoom() > 15) {
           this.setZoom(15);
           this.setCenter(infowindow2.getPosition());
@@ -421,7 +423,7 @@ class Main extends React.Component {
       });
     });
 
-    document.getElementById('use-strict-bounds').addEventListener('click', function() {
+    document.getElementById('use-strict-bounds').addEventListener('click', function () {
       autocomplete.setOptions({
         strictBounds: this.checked,
       });
@@ -444,37 +446,53 @@ class Main extends React.Component {
   }
 
   clearResults() {
-    let results = document.getElementById('results');
+    const results = document.getElementById('results');
     while (results.childNodes[0]) {
       results.removeChild(results.childNodes[0]);
     }
   }
 
   render() {
-    return (
-      <div>
-        <div id="pac-card">
-          <div id="title">
-            <p id="para">goFind!</p>
-          </div>
-          <div id="pac-container">
-            <input id="pac-input" type="text" placeholder="What are you looking for?" />
-            <p>Search within</p>
-            <input type="checkbox" id="use-strict-bounds" />
-          </div>
-          <div id="listing">
-            <table id="resultsTable">
-              <tbody id="results" />
-            </table>
-          </div>
-        </div>
-        <div id="infoContent">
-          <img src="" width={16} height={16} id="place-icon" />
-          <span id="place-name" className="title" />
-          <br />
-          <span id="place-address" />
-        </div>
-      </div>
+    return (<div >
+      <div id= "pac-card"
+      >
+        <div id ="title"
+      >
+        <p id= "para"
+      > goFind!
+      </p> 
+      </div> <div id="pac-container"> <input id= "pac-input"
+        type ="text"
+        placeholder ="What are you looking for?"
+      />
+        <p > Search within 
+      </p> <input
+        type ="checkbox"
+        id= "use-strict-bounds"
+      />
+            </div> <div id="listing"> <table id ="resultsTable"
+      >
+        <tbody id= "results"
+      />
+                               </table> 
+            </div> 
+      </div> <div id="infoContent"> <img src =""
+        width= {
+        16
+      }
+        height= {
+        16
+      }
+        id= "place-icon"
+      />
+        <span id= "place-name"
+        className= "title"
+      />
+        <br />
+        <span id= "place-address"
+      />
+            </div> 
+             </div>
     );
   }
 }

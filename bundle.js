@@ -21266,14 +21266,18 @@ var Main = function (_React$Component) {
       autocomplete.bindTo('bounds', map);
       var infoWindow = new google.maps.InfoWindow();
       var infoCont = document.getElementById('infoContent');
-      this.setState({ infoCont: document.getElementById('infoContent') });
+      this.setState({
+        infoCont: document.getElementById('infoContent')
+      });
       infoWindow.setContent(infoCont);
       var marker = new google.maps.Marker({
         map: map,
         anchorPoint: new google.maps.Point(0, -29)
       });
       var directionsService = new google.maps.DirectionsService();
-      var directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+      var directionsDisplay = new google.maps.DirectionsRenderer({
+        suppressMarkers: true
+      });
       var infowindow2 = new google.maps.InfoWindow();
 
       autocomplete.addListener('place_changed', function () {
@@ -21283,7 +21287,9 @@ var Main = function (_React$Component) {
           // User entered the name of a Place that was not suggested and
           // pressed the Enter key, or the Place Details request failed.
           infowindow2.close();
-          directionsDisplay.setDirections({ routes: [] });
+          directionsDisplay.setDirections({
+            routes: []
+          });
           directionsDisplay.setMap(map);
           var request = {
             location: map.center,
@@ -21519,7 +21525,9 @@ var Main = function (_React$Component) {
               for (var i = 0; i < results.length; i++) {
                 _loop(i);
               }
-              _this2.setState({ markers: markers });
+              _this2.setState({
+                markers: markers
+              });
               for (var i = 0; i < results.length; i++) {
                 setTimeout(_this2.dropMarker(i), i * 100);
               }
@@ -21567,9 +21575,9 @@ var Main = function (_React$Component) {
               if (response.routes[0].legs[0].steps.length === 0) {
                 return;
               }
-              var startLatlng = 0,
-                  endLatlng = 0,
-                  _distance3 = 0;
+              var startLatlng = 0;
+              var endLatlng = 0;
+              var _distance3 = 0;
               for (var j = 0; j < response.routes[0].legs[0].steps.length; j++) {
                 if (response.routes[0].legs[0].steps[j].distance.value > _distance3) {
                   _distance3 = response.routes[0].legs[0].steps[j].distance.value;
@@ -21638,44 +21646,69 @@ var Main = function (_React$Component) {
         null,
         _react2.default.createElement(
           'div',
-          { id: 'pac-card' },
+          { id: 'pac-card'
+          },
           _react2.default.createElement(
             'div',
-            { id: 'title' },
+            { id: 'title'
+            },
             _react2.default.createElement(
               'p',
-              { id: 'para' },
-              'goFind!'
+              { id: 'para'
+              },
+              ' goFind!'
             )
           ),
+          ' ',
           _react2.default.createElement(
             'div',
             { id: 'pac-container' },
-            _react2.default.createElement('input', { id: 'pac-input', type: 'text', placeholder: 'What are you looking for?' }),
+            ' ',
+            _react2.default.createElement('input', { id: 'pac-input',
+              type: 'text',
+              placeholder: 'What are you looking for?'
+            }),
             _react2.default.createElement(
               'p',
               null,
-              'Search within'
+              ' Search within'
             ),
-            _react2.default.createElement('input', { type: 'checkbox', id: 'use-strict-bounds' })
+            ' ',
+            _react2.default.createElement('input', {
+              type: 'checkbox',
+              id: 'use-strict-bounds'
+            })
           ),
+          ' ',
           _react2.default.createElement(
             'div',
             { id: 'listing' },
+            ' ',
             _react2.default.createElement(
               'table',
-              { id: 'resultsTable' },
-              _react2.default.createElement('tbody', { id: 'results' })
+              { id: 'resultsTable'
+              },
+              _react2.default.createElement('tbody', { id: 'results'
+              })
             )
           )
         ),
+        ' ',
         _react2.default.createElement(
           'div',
           { id: 'infoContent' },
-          _react2.default.createElement('img', { src: '', width: 16, height: 16, id: 'place-icon' }),
-          _react2.default.createElement('span', { id: 'place-name', className: 'title' }),
+          ' ',
+          _react2.default.createElement('img', { src: '',
+            width: 16,
+            height: 16,
+            id: 'place-icon'
+          }),
+          _react2.default.createElement('span', { id: 'place-name',
+            className: 'title'
+          }),
           _react2.default.createElement('br', null),
-          _react2.default.createElement('span', { id: 'place-address' })
+          _react2.default.createElement('span', { id: 'place-address'
+          })
         )
       );
     }
