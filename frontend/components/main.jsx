@@ -77,7 +77,6 @@ class Main extends React.Component {
               let marker = markers[i];
               if (marker) {
                 let listing = document.getElementById('listing');
-                // listing.style.padding = '15px 0 15px 15px';
                 listing.style.border = '0.1em solid #626962';
                 listing.style.boxShadow = 'inset 0 0 0 0.1em #272727';
                 listing.style.width = '40em';
