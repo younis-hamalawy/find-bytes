@@ -21317,10 +21317,10 @@ var Main = function (_React$Component) {
                 var marker = markers[i];
                 if (marker) {
                   var listing = document.getElementById('listing');
-                  listing.style.padding = '15px 0 15px 15px';
-                  listing.style.border = '1px solid #626962';
-                  listing.style.boxShadow = 'inset 0 0 0 1px #272727';
-                  listing.style.width = '488px';
+                  // listing.style.padding = '15px 0 15px 15px';
+                  listing.style.border = '0.1em solid #626962';
+                  listing.style.boxShadow = 'inset 0 0 0 0.1em #272727';
+                  listing.style.width = '40em';
                   listing.style.background = '#ffffffa3';
                 }
                 // If the user clicks an establishment marker, show the details of that place
@@ -21537,7 +21537,7 @@ var Main = function (_React$Component) {
           listing.style.padding = '0';
           listing.style.border = 'none';
           listing.style.boxShadow = 'none';
-          listing.style.width = '518px';
+          listing.style.width = '42em';
           listing.style.background = 'transparent';
           map.fitBounds(place.geometry.viewport);
         } else {
