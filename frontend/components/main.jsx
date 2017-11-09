@@ -136,21 +136,18 @@ class Main extends React.Component {
                         0.5,
                       );
                       infowindow2.setPosition(inBetween);
-                      infowindow2.setContent(`${response.routes[0].legs[0].distance.text 
-                          }<br>${ 
-                          response.routes[0].legs[0].duration.text 
-                          } `,);
+                      infowindow2.setContent(`${response.routes[0].legs[0].distance.text}<br>${response.routes[0].legs[0].duration.text} `,);
                       infowindow2.open(map);
                     } else {
-                      window.alert(`Directions request failed due to ${  status}`);
+                      window.alert(`Directions request failed due to ${status}`);
                     }
                   },
                 );
                 infoWindow.open(map, marker);
-                google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
-                  if (this.getZoom() > 15) {
-                    this.setZoom(15);
-                    this.setCenter(infowindow2.getPosition());
+                google.maps.event.addListenerOnce(map, 'bounds_changed', (event) => {
+                  if (map.getZoom() > 15) {
+                    map.setZoom(15);
+                    map.setCenter(infowindow2.getPosition());
                     map.panBy(0, -200);
                   }
                 });
@@ -217,22 +214,19 @@ class Main extends React.Component {
                           0.5,
                         );
                         infowindow2.setPosition(inBetween);
-                        infowindow2.setContent(`${response.routes[0].legs[0].distance.text 
-                            }<br>${ 
-                            response.routes[0].legs[0].duration.text 
-                            } `,);
+                        infowindow2.setContent(`${response.routes[0].legs[0].distance.text}<br>${response.routes[0].legs[0].duration.text} `,);
                         infowindow2.open(map);
                       } else {
-                        window.alert(`Directions request failed due to ${  status}`);
+                        window.alert(`Directions request failed due to ${status}`);
                       }
                     },
                   );
                 }
                 infoWindow.open(map, marker);
-                google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
-                  if (this.getZoom() > 15) {
-                    this.setZoom(15);
-                    this.setCenter(infowindow2.getPosition());
+                google.maps.event.addListenerOnce(map, 'bounds_changed', (event) => {
+                  if (map.getZoom() > 15) {
+                    map.setZoom(15);
+                    map.setCenter(infowindow2.getPosition());
                     map.panBy(0, -200);
                   }
                 });
@@ -394,26 +388,26 @@ class Main extends React.Component {
                 0.5,
               );
               infowindow2.setPosition(inBetween);
-              infowindow2.setContent(`${response.routes[0].legs[0].distance.text  }<br>${  response.routes[0].legs[0].duration.text  } `,);
+              infowindow2.setContent(`${response.routes[0].legs[0].distance.text}<br>${response.routes[0].legs[0].duration.text} `,);
               infowindow2.open(map);
             } else {
-              window.alert(`Directions request failed due to ${  status}`);
+              window.alert(`Directions request failed due to ${status}`);
             }
           },
         );
       }
 
       infoWindow.open(map, marker);
-      google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
-        if (this.getZoom() > 15) {
-          this.setZoom(15);
-          this.setCenter(infowindow2.getPosition());
+      google.maps.event.addListenerOnce(map, 'bounds_changed', (event) => {
+        if (map.getZoom() > 15) {
+          map.setZoom(15);
+          map.setCenter(infowindow2.getPosition());
           map.panBy(0, -200);
         }
       });
     });
 
-    document.getElementById('use-strict-bounds').addEventListener('click', function () {
+    document.getElementById('use-strict-bounds').addEventListener('click', () => {
       autocomplete.setOptions({
         strictBounds: this.checked,
       });

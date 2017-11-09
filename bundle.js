@@ -21369,9 +21369,9 @@ var Main = function (_React$Component) {
                   });
                   infoWindow.open(map, marker);
                   google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
-                    if (this.getZoom() > 15) {
-                      this.setZoom(15);
-                      this.setCenter(infowindow2.getPosition());
+                    if (map.getZoom() > 15) {
+                      map.setZoom(15);
+                      map.setCenter(infowindow2.getPosition());
                       map.panBy(0, -200);
                     }
                   });
@@ -21432,9 +21432,9 @@ var Main = function (_React$Component) {
                   }
                   infoWindow.open(map, marker);
                   google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
-                    if (this.getZoom() > 15) {
-                      this.setZoom(15);
-                      this.setCenter(infowindow2.getPosition());
+                    if (map.getZoom() > 15) {
+                      map.setZoom(15);
+                      map.setCenter(infowindow2.getPosition());
                       map.panBy(0, -200);
                     }
                   });
@@ -21589,9 +21589,9 @@ var Main = function (_React$Component) {
 
         infoWindow.open(map, marker);
         google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
-          if (this.getZoom() > 15) {
-            this.setZoom(15);
-            this.setCenter(infowindow2.getPosition());
+          if (map.getZoom() > 15) {
+            map.setZoom(15);
+            map.setCenter(infowindow2.getPosition());
             map.panBy(0, -200);
           }
         });
@@ -21599,7 +21599,7 @@ var Main = function (_React$Component) {
 
       document.getElementById('use-strict-bounds').addEventListener('click', function () {
         autocomplete.setOptions({
-          strictBounds: this.checked
+          strictBounds: _this2.checked
         });
       });
     }
