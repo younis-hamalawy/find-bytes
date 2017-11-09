@@ -14,31 +14,17 @@ body {
   font-size: 16px;
 }
 
-#infoContent .title {
-  font-weight: bold;
-}
-
-#infoContent {
-  display: none;
-  font-family: 'Open Sans', sans-serif;
-  -webkit-align-content: space-between;
-  align-content: space-between;
-  -webkit-justify-content: space-between;
-  justify-content: space-between;
-  font-family: 'Open Sans', sans-serif;
-  min-height: 2.5em;
-  padding: 0.2em;
-}
-
-#infoContent img {
-  padding: 0.2em 0.2em 0.3em 0;
-  vertical-align: middle;
-}
-
-#map #infoContent {
-  display: inline-block;
+#pac-card {
+  flex: 0 1 50%;
   text-align: center;
-  font-family: 'Open Sans', sans-serif;
+  background: rgba(255, 255, 255, 0.7);
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  height: 18%;
 }
 
 #title {
@@ -51,36 +37,9 @@ body {
   background: transparent;
 }
 
-.placeIcon {
-  width: 1.5em;
-  height: 2.3em;
-  margin: 0.4em;
-}
-
-#resultsTable {
-  border-collapse: collapse;
-  padding: 0.5em;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 1.1em;
-  font-weight: 400;
-}
-
-#rating {
-  font-size: 1em;
-  font-family: 'Open Sans', sans-serif;
-}
-
-#pac-card {
-  flex: 0 1 50%;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.7);
-  position: relative;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  height: 18%;
+#para {
+  display: inline;
+  margin: 0 0 0 1em;
 }
 
 #pac-container {
@@ -140,11 +99,6 @@ body {
   outline: none;
 }
 
-#use-strict-bounds {
-  width: 3em;
-  box-shadow: none;
-}
-
 #pac-container p {
   color: #444;
   float: left;
@@ -154,6 +108,11 @@ body {
   margin: 0;
   line-height: initial;
   width: 4em;
+}
+
+#use-strict-bounds {
+  width: 3em;
+  box-shadow: none;
 }
 
 #listing {
@@ -184,21 +143,6 @@ body {
   border-radius: 0.5em;
 }
 
-#infoContent .span {
-  padding: 0.2em 0;
-}
-td {
-  padding: 0 0.25em;
-}
-tr {
-  padding: 0.9em;
-}
-
-#para {
-  display: inline;
-  margin: 0 0 0 1em;
-}
-
 #listing:after {
   display: block;
   background-color: #626962;
@@ -206,6 +150,68 @@ tr {
   width: 100%;
   position: absolute;
   bottom: -3;
+}
+
+#resultsTable {
+  border-collapse: collapse;
+  padding: 0.5em;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.1em;
+  font-weight: 400;
+}
+
+#rating {
+  font-size: 1em;
+  font-family: 'Open Sans', sans-serif;
+}
+
+td {
+  padding: 0 0.25em;
+}
+
+tr {
+  padding: 0.9em;
+}
+
+td:nth-child(2) {
+  font-weight: bold;
+}
+
+#infoContent .title {
+  font-weight: bold;
+}
+
+#infoContent {
+  display: none;
+  font-family: 'Open Sans', sans-serif;
+  -webkit-align-content: space-between;
+  align-content: space-between;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  font-family: 'Open Sans', sans-serif;
+  min-height: 2.5em;
+  padding: 0.2em;
+}
+
+#infoContent img {
+  padding: 0.2em 0.2em 0.3em 0;
+  vertical-align: middle;
+}
+
+#map #infoContent {
+  display: inline-block;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.placeIcon {
+  width: 1.5em;
+  height: 2.3em;
+  margin: 0.4em;
+}
+
+#infoContent .span {
+  padding: 0.2em 0;
 }
 
 #pac-input {
@@ -216,8 +222,4 @@ tr {
   font-family: 'Open Sans', sans-serif;
   font-size: 1em;
   border: 0.2em;
-}
-
-td:nth-child(2) {
-  font-weight: bold;
 }
