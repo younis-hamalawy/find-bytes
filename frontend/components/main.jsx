@@ -18,6 +18,7 @@ class Main extends React.Component {
     this.getRoute = this.getRoute.bind(this);
     this.markerClick = this.markerClick.bind(this);
     this.manualSearch = this.manualSearch.bind(this);
+    this.makeDetail = this.makeDetail.bind(this);
   }
 
   componentDidMount() {
@@ -233,7 +234,6 @@ class Main extends React.Component {
           });
 
           markers[i].placeResult = results[i];
-          const results1 = document.getElementById('results');
           markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
           markerIcon = `${this.state.MARKER_PATH + markerLetter}.png`;
           const tr = document.createElement('tr');
@@ -247,51 +247,7 @@ class Main extends React.Component {
             }
           };
 
-          const iconTd = document.createElement('td');
-          const nameTd = document.createElement('td');
-          const icon = document.createElement('img');
-          const addressTd = document.createElement('td');
-          const ratingTd = document.createElement('td');
-          const distanceTd = document.createElement('td');
-          const timeTd = document.createElement('td');
-          const distance = document.createTextNode('');
-          const time = document.createTextNode('');
-          const name = document.createTextNode(results[i].name);
-
-          icon.src = markerIcon;
-          icon.setAttribute('class', 'placeIcon');
-          icon.setAttribute('className', 'placeIcon');
-          ratingTd.setAttribute('id', `iw-rating${i}`);
-          timeTd.setAttribute('id', `iw-time${i}`);
-          distanceTd.setAttribute('id', `iw-distance${i}`);
-          let address = '';
-          if (results[i].vicinity) {
-            address = document.createTextNode(results[i].vicinity.split(',')[0]);
-          }
-          iconTd.appendChild(icon);
-          nameTd.appendChild(name);
-          addressTd.appendChild(address);
-          distanceTd.appendChild(distance);
-          timeTd.appendChild(time);
-          tr.appendChild(iconTd);
-          tr.appendChild(nameTd);
-          tr.appendChild(addressTd);
-          tr.appendChild(ratingTd);
-          tr.appendChild(distanceTd);
-          tr.appendChild(timeTd);
-          results1.appendChild(tr);
-          if (results[i].rating) {
-            let ratingHtml = '';
-            for (let j = 0; j < 5; j++) {
-              if (results[i].rating < j + 0.5) {
-                ratingHtml += '&#10025;';
-              } else {
-                ratingHtml += '&#10029;';
-              }
-              document.getElementById(`iw-rating${i}`).innerHTML = ratingHtml;
-            }
-          }
-          this.getDistance(results[i], i);
+          this.makeDetail(results[i], i, tr, markerIcon);
         }
         this.setState({ markers });
         // Use marker animation to drop the icons incrementally on the map.
@@ -301,6 +257,55 @@ class Main extends React.Component {
       }
     };
     this.service.nearbySearch(request, callback);
+  }
+
+  makeDetail(result, i, tr, markerIcon) {
+    const results1 = document.getElementById('results');
+    const iconTd = document.createElement('td');
+    const nameTd = document.createElement('td');
+    const icon = document.createElement('img');
+    const addressTd = document.createElement('td');
+    const ratingTd = document.createElement('td');
+    const distanceTd = document.createElement('td');
+    const timeTd = document.createElement('td');
+    const distance = document.createTextNode('');
+    const time = document.createTextNode('');
+    const name = document.createTextNode(result.name);
+
+    icon.src = markerIcon;
+    icon.setAttribute('class', 'placeIcon');
+    icon.setAttribute('className', 'placeIcon');
+    ratingTd.setAttribute('id', `iw-rating${i}`);
+    timeTd.setAttribute('id', `iw-time${i}`);
+    distanceTd.setAttribute('id', `iw-distance${i}`);
+    let address = '';
+    if (result.vicinity) {
+      address = document.createTextNode(result.vicinity.split(',')[0]);
+    }
+    iconTd.appendChild(icon);
+    nameTd.appendChild(name);
+    addressTd.appendChild(address);
+    distanceTd.appendChild(distance);
+    timeTd.appendChild(time);
+    tr.appendChild(iconTd);
+    tr.appendChild(nameTd);
+    tr.appendChild(addressTd);
+    tr.appendChild(ratingTd);
+    tr.appendChild(distanceTd);
+    tr.appendChild(timeTd);
+    results1.appendChild(tr);
+    if (result.rating) {
+      let ratingHtml = '';
+      for (let j = 0; j < 5; j++) {
+        if (result.rating < j + 0.5) {
+          ratingHtml += '&#10025;';
+        } else {
+          ratingHtml += '&#10029;';
+        }
+        document.getElementById(`iw-rating${i}`).innerHTML = ratingHtml;
+      }
+    }
+    this.getDistance(result, i);
   }
 
   markerClick(infoWindow, infoWindow2, oneMarker) {

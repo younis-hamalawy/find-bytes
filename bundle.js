@@ -21252,6 +21252,7 @@ var Main = function (_React$Component) {
     _this.getRoute = _this.getRoute.bind(_this);
     _this.markerClick = _this.markerClick.bind(_this);
     _this.manualSearch = _this.manualSearch.bind(_this);
+    _this.makeDetail = _this.makeDetail.bind(_this);
     return _this;
   }
 
@@ -21460,7 +21461,6 @@ var Main = function (_React$Component) {
             });
 
             markers[_i].placeResult = results[_i];
-            var results1 = document.getElementById('results');
             markerLetter = String.fromCharCode('A'.charCodeAt(0) + _i % 26);
             markerIcon = _this4.state.MARKER_PATH + markerLetter + '.png';
             var tr = document.createElement('tr');
@@ -21474,51 +21474,7 @@ var Main = function (_React$Component) {
               }
             };
 
-            var iconTd = document.createElement('td');
-            var nameTd = document.createElement('td');
-            var icon = document.createElement('img');
-            var addressTd = document.createElement('td');
-            var ratingTd = document.createElement('td');
-            var distanceTd = document.createElement('td');
-            var timeTd = document.createElement('td');
-            var distance = document.createTextNode('');
-            var time = document.createTextNode('');
-            var name = document.createTextNode(results[_i].name);
-
-            icon.src = markerIcon;
-            icon.setAttribute('class', 'placeIcon');
-            icon.setAttribute('className', 'placeIcon');
-            ratingTd.setAttribute('id', 'iw-rating' + _i);
-            timeTd.setAttribute('id', 'iw-time' + _i);
-            distanceTd.setAttribute('id', 'iw-distance' + _i);
-            var address = '';
-            if (results[_i].vicinity) {
-              address = document.createTextNode(results[_i].vicinity.split(',')[0]);
-            }
-            iconTd.appendChild(icon);
-            nameTd.appendChild(name);
-            addressTd.appendChild(address);
-            distanceTd.appendChild(distance);
-            timeTd.appendChild(time);
-            tr.appendChild(iconTd);
-            tr.appendChild(nameTd);
-            tr.appendChild(addressTd);
-            tr.appendChild(ratingTd);
-            tr.appendChild(distanceTd);
-            tr.appendChild(timeTd);
-            results1.appendChild(tr);
-            if (results[_i].rating) {
-              var ratingHtml = '';
-              for (var j = 0; j < 5; j++) {
-                if (results[_i].rating < j + 0.5) {
-                  ratingHtml += '&#10025;';
-                } else {
-                  ratingHtml += '&#10029;';
-                }
-                document.getElementById('iw-rating' + _i).innerHTML = ratingHtml;
-              }
-            }
-            _this4.getDistance(results[_i], _i);
+            _this4.makeDetail(results[_i], _i, tr, markerIcon);
           };
 
           for (var _i = 0; _i < results.length; _i++) {
@@ -21532,6 +21488,56 @@ var Main = function (_React$Component) {
         }
       };
       this.service.nearbySearch(request, callback);
+    }
+  }, {
+    key: 'makeDetail',
+    value: function makeDetail(result, i, tr, markerIcon) {
+      var results1 = document.getElementById('results');
+      var iconTd = document.createElement('td');
+      var nameTd = document.createElement('td');
+      var icon = document.createElement('img');
+      var addressTd = document.createElement('td');
+      var ratingTd = document.createElement('td');
+      var distanceTd = document.createElement('td');
+      var timeTd = document.createElement('td');
+      var distance = document.createTextNode('');
+      var time = document.createTextNode('');
+      var name = document.createTextNode(result.name);
+
+      icon.src = markerIcon;
+      icon.setAttribute('class', 'placeIcon');
+      icon.setAttribute('className', 'placeIcon');
+      ratingTd.setAttribute('id', 'iw-rating' + i);
+      timeTd.setAttribute('id', 'iw-time' + i);
+      distanceTd.setAttribute('id', 'iw-distance' + i);
+      var address = '';
+      if (result.vicinity) {
+        address = document.createTextNode(result.vicinity.split(',')[0]);
+      }
+      iconTd.appendChild(icon);
+      nameTd.appendChild(name);
+      addressTd.appendChild(address);
+      distanceTd.appendChild(distance);
+      timeTd.appendChild(time);
+      tr.appendChild(iconTd);
+      tr.appendChild(nameTd);
+      tr.appendChild(addressTd);
+      tr.appendChild(ratingTd);
+      tr.appendChild(distanceTd);
+      tr.appendChild(timeTd);
+      results1.appendChild(tr);
+      if (result.rating) {
+        var ratingHtml = '';
+        for (var j = 0; j < 5; j++) {
+          if (result.rating < j + 0.5) {
+            ratingHtml += '&#10025;';
+          } else {
+            ratingHtml += '&#10029;';
+          }
+          document.getElementById('iw-rating' + i).innerHTML = ratingHtml;
+        }
+      }
+      this.getDistance(result, i);
     }
   }, {
     key: 'markerClick',
