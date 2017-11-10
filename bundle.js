@@ -21277,6 +21277,8 @@ var Main = function (_React$Component) {
         anchorPoint: new google.maps.Point(0, -29)
       });
 
+      // Use Google direction service to get routes,
+      // and draw them on the map when the user clicks a marker.
       this.directionsService = new google.maps.DirectionsService();
       this.directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
       var infowindow2 = new google.maps.InfoWindow();
@@ -21319,26 +21321,26 @@ var Main = function (_React$Component) {
                   animation: google.maps.Animation.DROP,
                   icon: markerIcon
                 });
-                var marker = markers[i];
-                if (marker) {
+                var oneMarker = markers[i];
+                if (oneMarker) {
                   var listing = document.getElementById('listing');
                   listing.style.padding = '1em 0 1em 1em';
                   listing.style.border = '0.1em solid #626962';
                   listing.style.boxShadow = 'inset 0 0 0 0.1em #272727';
                   listing.style.width = '40em';
-                  listing.style.background = '#ffffffa3';
+                  listing.style.background = 'rgba(255, 255, 255, 0.7)';
                 }
                 // If the user clicks an establishment marker, show the details of that place
                 // in an info window.
-                google.maps.event.addListener(marker, 'click', function () {
+                google.maps.event.addListener(oneMarker, 'click', function () {
                   infoWindow.close();
                   var infoCont = document.getElementById('infoContent') || _this2.state.infoCont;
                   infoWindow.setContent(infoCont);
-                  infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
-                  infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
+                  infoCont.children['place-icon'].src = oneMarker.placeResult.icon || results[i].icon;
+                  infoCont.children['place-name'].textContent = oneMarker.placeResult.name || results[i].name;
                   var address = '';
-                  if (marker.placeResult.vicinity) {
-                    address = [marker.placeResult.vicinity.split(',')[0] || ''].join(' ');
+                  if (oneMarker.placeResult.vicinity) {
+                    address = [oneMarker.placeResult.vicinity.split(',')[0] || ''].join(' ');
                   } else if (results[i].vicinity) {
                     address = [results[i].vicinity.split(',')[0] || ''].join(' ');
                   }
@@ -21347,7 +21349,7 @@ var Main = function (_React$Component) {
                   if (pos) {
                     _this2.getRoute(results[i], infowindow2);
                   }
-                  infoWindow.open(map, marker);
+                  infoWindow.open(map, oneMarker);
                   google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
                     if (map.getZoom() > 15) {
                       map.setZoom(15);
@@ -21358,7 +21360,6 @@ var Main = function (_React$Component) {
                 });
 
                 markers[i].placeResult = results[i];
-
                 var results1 = document.getElementById('results');
                 markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
                 markerIcon = _this2.state.MARKER_PATH + markerLetter + '.png';
@@ -21370,11 +21371,11 @@ var Main = function (_React$Component) {
                   infoWindow.close();
                   var infoCont = document.getElementById('infoContent') || _this2.state.infoCont;
                   infoWindow.setContent(infoCont);
-                  infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
-                  infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
+                  infoCont.children['place-icon'].src = oneMarker.placeResult.icon || results[i].icon;
+                  infoCont.children['place-name'].textContent = oneMarker.placeResult.name || results[i].name;
                   var address = '';
-                  if (marker.placeResult.vicinity) {
-                    address = [marker.placeResult.vicinity.split(',')[0] || ''].join(' ');
+                  if (oneMarker.placeResult.vicinity) {
+                    address = [oneMarker.placeResult.vicinity.split(',')[0] || ''].join(' ');
                   } else if (results[i].vicinity) {
                     address = [results[i].vicinity.split(',')[0] || ''].join(' ');
                   }
@@ -21383,7 +21384,7 @@ var Main = function (_React$Component) {
                   if (pos) {
                     _this2.getRoute(results[i], infowindow2);
                   }
-                  infoWindow.open(map, marker);
+                  infoWindow.open(map, oneMarker);
                   google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
                     if (map.getZoom() > 15) {
                       map.setZoom(15);
@@ -21529,31 +21530,9 @@ var Main = function (_React$Component) {
       });
     }
   }, {
-    key: 'clearMarkers',
-    value: function clearMarkers() {
-      for (var i = 0; i < this.state.markers.length; i++) {
-        if (this.state.markers[i]) {
-          this.state.markers[i].setMap(null);
-        }
-      }
-      this.state.markers = [];
-    }
-  }, {
-    key: 'clearResults',
-    value: function clearResults() {
-      var results = document.getElementById('results');
-      while (results.childNodes[0]) {
-        results.removeChild(results.childNodes[0]);
-      }
-    }
-  }, {
     key: 'getRoute',
     value: function getRoute(place, infowindow2) {
       var _this3 = this;
-
-      // console.log(place);
-      // const directionsService = new google.maps.DirectionsService();
-      // const directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
 
       this.directionsService.route({
         origin: pos,
@@ -21593,6 +21572,24 @@ var Main = function (_React$Component) {
       return function () {
         _this4.state.markers[i].setMap(map);
       };
+    }
+  }, {
+    key: 'clearMarkers',
+    value: function clearMarkers() {
+      for (var i = 0; i < this.state.markers.length; i++) {
+        if (this.state.markers[i]) {
+          this.state.markers[i].setMap(null);
+        }
+      }
+      this.state.markers = [];
+    }
+  }, {
+    key: 'clearResults',
+    value: function clearResults() {
+      var results = document.getElementById('results');
+      while (results.childNodes[0]) {
+        results.removeChild(results.childNodes[0]);
+      }
     }
   }, {
     key: 'render',

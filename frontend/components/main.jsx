@@ -38,6 +38,8 @@ class Main extends React.Component {
       anchorPoint: new google.maps.Point(0, -29),
     });
 
+    // Use Google direction service to get routes,
+    // and draw them on the map when the user clicks a marker.
     this.directionsService = new google.maps.DirectionsService();
     this.directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
     const infowindow2 = new google.maps.InfoWindow();
@@ -79,26 +81,26 @@ class Main extends React.Component {
                 animation: google.maps.Animation.DROP,
                 icon: markerIcon,
               });
-              const marker = markers[i];
-              if (marker) {
+              const oneMarker = markers[i];
+              if (oneMarker) {
                 const listing = document.getElementById('listing');
                 listing.style.padding = '1em 0 1em 1em';
                 listing.style.border = '0.1em solid #626962';
                 listing.style.boxShadow = 'inset 0 0 0 0.1em #272727';
                 listing.style.width = '40em';
-                listing.style.background = '#ffffffa3';
+                listing.style.background = 'rgba(255, 255, 255, 0.7)';
               }
               // If the user clicks an establishment marker, show the details of that place
               // in an info window.
-              google.maps.event.addListener(marker, 'click', () => {
+              google.maps.event.addListener(oneMarker, 'click', () => {
                 infoWindow.close();
                 const infoCont = document.getElementById('infoContent') || this.state.infoCont;
                 infoWindow.setContent(infoCont);
-                infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
-                infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
+                infoCont.children['place-icon'].src = oneMarker.placeResult.icon || results[i].icon;
+                infoCont.children['place-name'].textContent = oneMarker.placeResult.name || results[i].name;
                 let address = '';
-                if (marker.placeResult.vicinity) {
-                  address = [marker.placeResult.vicinity.split(',')[0] || ''].join(' ');
+                if (oneMarker.placeResult.vicinity) {
+                  address = [oneMarker.placeResult.vicinity.split(',')[0] || ''].join(' ');
                 } else if (results[i].vicinity) {
                   address = [results[i].vicinity.split(',')[0] || ''].join(' ');
                 }
@@ -107,7 +109,7 @@ class Main extends React.Component {
                 if (pos) {
                   this.getRoute(results[i], infowindow2);
                 }
-                infoWindow.open(map, marker);
+                infoWindow.open(map, oneMarker);
                 google.maps.event.addListenerOnce(map, 'bounds_changed', (event) => {
                   if (map.getZoom() > 15) {
                     map.setZoom(15);
@@ -118,7 +120,6 @@ class Main extends React.Component {
               });
 
               markers[i].placeResult = results[i];
-
               const results1 = document.getElementById('results');
               markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
               markerIcon = `${this.state.MARKER_PATH + markerLetter}.png`;
@@ -130,11 +131,11 @@ class Main extends React.Component {
                 infoWindow.close();
                 const infoCont = document.getElementById('infoContent') || this.state.infoCont;
                 infoWindow.setContent(infoCont);
-                infoCont.children['place-icon'].src = marker.placeResult.icon || results[i].icon;
-                infoCont.children['place-name'].textContent = marker.placeResult.name || results[i].name;
+                infoCont.children['place-icon'].src = oneMarker.placeResult.icon || results[i].icon;
+                infoCont.children['place-name'].textContent = oneMarker.placeResult.name || results[i].name;
                 let address = '';
-                if (marker.placeResult.vicinity) {
-                  address = [marker.placeResult.vicinity.split(',')[0] || ''].join(' ');
+                if (oneMarker.placeResult.vicinity) {
+                  address = [oneMarker.placeResult.vicinity.split(',')[0] || ''].join(' ');
                 } else if (results[i].vicinity) {
                   address = [results[i].vicinity.split(',')[0] || ''].join(' ');
                 }
@@ -143,7 +144,7 @@ class Main extends React.Component {
                 if (pos) {
                   this.getRoute(results[i], infowindow2);
                 }
-                infoWindow.open(map, marker);
+                infoWindow.open(map, oneMarker);
                 google.maps.event.addListenerOnce(map, 'bounds_changed', (event) => {
                   if (map.getZoom() > 15) {
                     map.setZoom(15);
@@ -294,27 +295,7 @@ class Main extends React.Component {
     });
   }
 
-  clearMarkers() {
-    for (let i = 0; i < this.state.markers.length; i++) {
-      if (this.state.markers[i]) {
-        this.state.markers[i].setMap(null);
-      }
-    }
-    this.state.markers = [];
-  }
-
-  clearResults() {
-    const results = document.getElementById('results');
-    while (results.childNodes[0]) {
-      results.removeChild(results.childNodes[0]);
-    }
-  }
-
   getRoute(place, infowindow2) {
-    // console.log(place);
-    // const directionsService = new google.maps.DirectionsService();
-    // const directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
-
     this.directionsService.route(
       {
         origin: pos,
@@ -363,6 +344,22 @@ class Main extends React.Component {
     return () => {
       this.state.markers[i].setMap(map);
     };
+  }
+
+  clearMarkers() {
+    for (let i = 0; i < this.state.markers.length; i++) {
+      if (this.state.markers[i]) {
+        this.state.markers[i].setMap(null);
+      }
+    }
+    this.state.markers = [];
+  }
+
+  clearResults() {
+    const results = document.getElementById('results');
+    while (results.childNodes[0]) {
+      results.removeChild(results.childNodes[0]);
+    }
   }
 
   render() {
