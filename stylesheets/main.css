@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600|Vollkorn:900');
-
 #map {
   height: 100%;
 }
@@ -57,7 +56,6 @@ body {
   line-height: 3em;
 }
 
-
 #pac-container input {
   border: 0.1em solid #444;
   border-radius: 0.5em 0 0 0.5em;
@@ -112,7 +110,7 @@ body {
   cursor: pointer;
   overflow-x: hidden;
   border: none;
-  padding: 1em 0 1em 1em;
+  padding: 1em 0.5em 1em 1em;
   border-radius: 0.5em;
   margin-right: 10em;
   margin-left: 1em;
