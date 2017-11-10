@@ -9,6 +9,7 @@ class Main extends React.Component {
       hostnameRegexp: new RegExp('^https?://.+?/'),
       directionsService: '',
       directionsDisplay: '',
+      service: '',
     };
 
     this.dropMarker = this.dropMarker.bind(this);
@@ -293,12 +294,6 @@ class Main extends React.Component {
     });
   }
 
-  dropMarker(i) {
-    return () => {
-      this.state.markers[i].setMap(map);
-    };
-  }
-
   clearMarkers() {
     for (let i = 0; i < this.state.markers.length; i++) {
       if (this.state.markers[i]) {
@@ -362,6 +357,12 @@ class Main extends React.Component {
         }
       },
     );
+  }
+
+  dropMarker(i) {
+    return () => {
+      this.state.markers[i].setMap(map);
+    };
   }
 
   render() {

@@ -21242,7 +21242,8 @@ var Main = function (_React$Component) {
       MARKER_PATH: 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
       hostnameRegexp: new RegExp('^https?://.+?/'),
       directionsService: '',
-      directionsDisplay: ''
+      directionsDisplay: '',
+      service: ''
     };
 
     _this.dropMarker = _this.dropMarker.bind(_this);
@@ -21528,15 +21529,6 @@ var Main = function (_React$Component) {
       });
     }
   }, {
-    key: 'dropMarker',
-    value: function dropMarker(i) {
-      var _this3 = this;
-
-      return function () {
-        _this3.state.markers[i].setMap(map);
-      };
-    }
-  }, {
     key: 'clearMarkers',
     value: function clearMarkers() {
       for (var i = 0; i < this.state.markers.length; i++) {
@@ -21557,7 +21549,7 @@ var Main = function (_React$Component) {
   }, {
     key: 'getRoute',
     value: function getRoute(place, infowindow2) {
-      var _this4 = this;
+      var _this3 = this;
 
       // console.log(place);
       // const directionsService = new google.maps.DirectionsService();
@@ -21569,8 +21561,8 @@ var Main = function (_React$Component) {
         travelMode: 'BICYCLING'
       }, function (response, status) {
         if (status === 'OK') {
-          _this4.directionsDisplay.setMap(map);
-          _this4.directionsDisplay.setDirections(response);
+          _this3.directionsDisplay.setMap(map);
+          _this3.directionsDisplay.setDirections(response);
           if (response.routes[0].legs[0].steps.length === 0) {
             return;
           }
@@ -21592,6 +21584,15 @@ var Main = function (_React$Component) {
           window.alert('Directions request failed due to ' + status);
         }
       });
+    }
+  }, {
+    key: 'dropMarker',
+    value: function dropMarker(i) {
+      var _this4 = this;
+
+      return function () {
+        _this4.state.markers[i].setMap(map);
+      };
     }
   }, {
     key: 'render',
