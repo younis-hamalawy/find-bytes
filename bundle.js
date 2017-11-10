@@ -21250,6 +21250,8 @@ var Main = function (_React$Component) {
     _this.clearMarkers = _this.clearMarkers.bind(_this);
     _this.clearResults = _this.clearResults.bind(_this);
     _this.getRoute = _this.getRoute.bind(_this);
+    _this.markerClick = _this.markerClick.bind(_this);
+    _this.manualSearch = _this.manualSearch.bind(_this);
     return _this;
   }
 
@@ -21261,7 +21263,7 @@ var Main = function (_React$Component) {
       var card = document.getElementById('pac-card');
       var input = document.getElementById('pac-input');
       var strictBounds = document.getElementById('strict-bounds-selector');
-      map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
+      map.controls[google.maps.ControlPosition.TOP].push(card);
       var autocomplete = new google.maps.places.Autocomplete(input);
 
       // Bind the map's bounds (viewport) property to the autocomplete object,
@@ -21281,7 +21283,7 @@ var Main = function (_React$Component) {
       // and draw them on the map when the user clicks a marker.
       this.directionsService = new google.maps.DirectionsService();
       this.directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
-      var infowindow2 = new google.maps.InfoWindow();
+      var infoWindow2 = new google.maps.InfoWindow();
 
       autocomplete.addListener('place_changed', function () {
         infoWindow.close();
@@ -21289,202 +21291,12 @@ var Main = function (_React$Component) {
         if (!place.geometry) {
           // User entered the name of a Place that was not suggested and
           // pressed the Enter key, or the Place Details request failed.
-          infowindow2.close();
-          _this2.directionsDisplay.setDirections({ routes: [] });
-          _this2.directionsDisplay.setMap(map);
-          var request = {
-            location: map.center,
-            radius: '500',
-            query: input.value,
-            keyword: input.value,
-            bounds: map.getBounds()
-          };
-          _this2.service = new google.maps.places.PlacesService(map);
-          var callback = function callback(results, status) {
-            if (status === google.maps.places.PlacesServiceStatus.OK) {
-              _this2.clearResults();
-              _this2.clearMarkers();
-              var markers = [];
-              marker.setVisible(false);
-              // Create a marker for each establishment found, and
-              // assign a letter of the alphabetic to each marker icon.
-
-              var _loop = function _loop(i) {
-                var markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
-                var markerIcon = _this2.state.MARKER_PATH + markerLetter + '.png';
-                // Use marker animation to drop the icons incrementally on the map.
-                var infowindow = new google.maps.InfoWindow({
-                  content: ''
-                });
-                markers[i] = new google.maps.Marker({
-                  position: results[i].geometry.location,
-                  animation: google.maps.Animation.DROP,
-                  icon: markerIcon
-                });
-                var oneMarker = markers[i];
-                if (oneMarker) {
-                  var listing = document.getElementById('listing');
-                  listing.style.padding = '1em 0 1em 1em';
-                  listing.style.border = '0.1em solid #626962';
-                  listing.style.boxShadow = 'inset 0 0 0 0.1em #272727';
-                  listing.style.width = '40em';
-                  listing.style.background = 'rgba(255, 255, 255, 0.7)';
-                }
-                // If the user clicks an establishment marker, show the details of that place
-                // in an info window.
-                google.maps.event.addListener(oneMarker, 'click', function () {
-                  infoWindow.close();
-                  var infoCont = document.getElementById('infoContent') || _this2.state.infoCont;
-                  infoWindow.setContent(infoCont);
-                  infoCont.children['place-icon'].src = oneMarker.placeResult.icon || results[i].icon;
-                  infoCont.children['place-name'].textContent = oneMarker.placeResult.name || results[i].name;
-                  var address = '';
-                  if (oneMarker.placeResult.vicinity) {
-                    address = [oneMarker.placeResult.vicinity.split(',')[0] || ''].join(' ');
-                  } else if (results[i].vicinity) {
-                    address = [results[i].vicinity.split(',')[0] || ''].join(' ');
-                  }
-                  infoCont.children['place-address'].textContent = address;
-
-                  if (pos) {
-                    _this2.getRoute(results[i], infowindow2);
-                  }
-                  infoWindow.open(map, oneMarker);
-                  google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
-                    if (map.getZoom() > 15) {
-                      map.setZoom(15);
-                      map.setCenter(infowindow2.getPosition());
-                      map.panBy(0, -200);
-                    }
-                  });
-                });
-
-                markers[i].placeResult = results[i];
-                var results1 = document.getElementById('results');
-                markerLetter = String.fromCharCode('A'.charCodeAt(0) + i % 26);
-                markerIcon = _this2.state.MARKER_PATH + markerLetter + '.png';
-                var tr = document.createElement('tr');
-
-                // If the user clicks an establishment marker, show the details of that place
-                // in an info window.
-                tr.onclick = function () {
-                  infoWindow.close();
-                  var infoCont = document.getElementById('infoContent') || _this2.state.infoCont;
-                  infoWindow.setContent(infoCont);
-                  infoCont.children['place-icon'].src = oneMarker.placeResult.icon || results[i].icon;
-                  infoCont.children['place-name'].textContent = oneMarker.placeResult.name || results[i].name;
-                  var address = '';
-                  if (oneMarker.placeResult.vicinity) {
-                    address = [oneMarker.placeResult.vicinity.split(',')[0] || ''].join(' ');
-                  } else if (results[i].vicinity) {
-                    address = [results[i].vicinity.split(',')[0] || ''].join(' ');
-                  }
-                  infoCont.children['place-address'].textContent = address;
-
-                  if (pos) {
-                    _this2.getRoute(results[i], infowindow2);
-                  }
-                  infoWindow.open(map, oneMarker);
-                  google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
-                    if (map.getZoom() > 15) {
-                      map.setZoom(15);
-                      map.setCenter(infowindow2.getPosition());
-                      map.panBy(0, -200);
-                    }
-                  });
-                };
-
-                var iconTd = document.createElement('td');
-                var nameTd = document.createElement('td');
-                var icon = document.createElement('img');
-                var addressTd = document.createElement('td');
-                var ratingTd = document.createElement('td');
-                var distanceTd = document.createElement('td');
-                var timeTd = document.createElement('td');
-                var distance = document.createTextNode('');
-                var time = document.createTextNode('');
-                var name = document.createTextNode(results[i].name);
-
-                icon.src = markerIcon;
-                icon.setAttribute('class', 'placeIcon');
-                icon.setAttribute('className', 'placeIcon');
-                ratingTd.setAttribute('id', 'iw-rating' + i);
-                timeTd.setAttribute('id', 'iw-time' + i);
-                distanceTd.setAttribute('id', 'iw-distance' + i);
-                var service = new google.maps.DistanceMatrixService();
-                var date = new Date();
-                var DrivingOptions = {
-                  departureTime: date,
-                  trafficModel: 'pessimistic'
-                };
-                var address = '';
-                if (results[i].vicinity) {
-                  address = document.createTextNode(results[i].vicinity.split(',')[0]);
-                }
-                iconTd.appendChild(icon);
-                nameTd.appendChild(name);
-                addressTd.appendChild(address);
-                distanceTd.appendChild(distance);
-                timeTd.appendChild(time);
-                tr.appendChild(iconTd);
-                tr.appendChild(nameTd);
-                tr.appendChild(addressTd);
-                tr.appendChild(ratingTd);
-                tr.appendChild(distanceTd);
-                tr.appendChild(timeTd);
-                results1.appendChild(tr);
-                if (results[i].rating) {
-                  var ratingHtml = '';
-                  for (var j = 0; j < 5; j++) {
-                    if (results[i].rating < j + 0.5) {
-                      ratingHtml += '&#10025;';
-                    } else {
-                      ratingHtml += '&#10029;';
-                    }
-                    document.getElementById('iw-rating' + i).innerHTML = ratingHtml;
-                  }
-                }
-
-                var x = i;
-                var response_data = function response_data(responseDis, status) {
-                  if (status !== google.maps.DistanceMatrixStatus.OK || status != 'OK') {
-                    console.log('Error:', status);
-                  } else {
-                    time = responseDis.rows[0].elements[0].duration.text;
-                    distance = (parseFloat(responseDis.rows[0].elements[0].distance.text.split(' ')[0]) / 1.6).toFixed(1) + ' mile';
-                    document.getElementById('iw-time' + x).innerHTML = time;
-                    document.getElementById('iw-distance' + x).innerHTML = distance;
-                  }
-                };
-                if (pos) {
-                  service.getDistanceMatrix({
-                    origins: [pos],
-                    destinations: [new google.maps.LatLng(results[i].geometry.location.lat(), results[i].geometry.location.lng())],
-                    travelMode: 'BICYCLING',
-                    drivingOptions: DrivingOptions,
-                    unitSystem: google.maps.UnitSystem.Imperical,
-                    // duration_in_traffic: true,
-                    avoidHighways: false,
-                    avoidTolls: false
-                  }, response_data);
-                }
-              };
-
-              for (var i = 0; i < results.length; i++) {
-                _loop(i);
-              }
-              _this2.setState({ markers: markers });
-              for (var i = 0; i < results.length; i++) {
-                setTimeout(_this2.dropMarker(i), i * 100);
-              }
-            }
-          };
-          _this2.service.nearbySearch(request, callback);
+          _this2.manualSearch(infoWindow, infoWindow2, input, marker);
           return;
         }
 
         // If the place has a geometry, then present it on a map.
-        if (place.geometry.viewport) {
+        if (place.geometry) {
           _this2.clearResults();
           _this2.clearMarkers();
           var listing = document.getElementById('listing');
@@ -21493,11 +21305,11 @@ var Main = function (_React$Component) {
           listing.style.boxShadow = 'none';
           listing.style.width = '42em';
           listing.style.background = 'transparent';
-          map.fitBounds(place.geometry.viewport);
-        } else {
-          map.setCenter(place.geometry.location);
-          map.setZoom(15); // Why 15? Because it looks good.
+          map.setZoom(15);
+          map.setCenter(infoWindow2.getPosition());
+          map.panBy(0, -200);
         }
+
         marker.setPosition(place.geometry.location);
         marker.setVisible(true);
 
@@ -21510,28 +21322,28 @@ var Main = function (_React$Component) {
         infoCont.children['place-name'].textContent = place.name;
         infoCont.children['place-address'].textContent = address;
         if (pos) {
-          _this2.getRoute(place, infowindow2);
+          _this2.getRoute(place, infoWindow2);
         }
-
         infoWindow.open(map, marker);
-        google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
-          if (map.getZoom() > 15) {
-            map.setZoom(15);
-            map.setCenter(infowindow2.getPosition());
-            map.panBy(0, -200);
-          }
-        });
       });
 
       document.getElementById('use-strict-bounds').addEventListener('click', function () {
-        autocomplete.setOptions({
-          strictBounds: _this2.checked
-        });
+        console.log(autocomplete);
+        if (autocomplete.strictBounds === true) {
+          autocomplete.setOptions({
+            strictBounds: false
+          });
+        } else {
+          autocomplete.setOptions({
+            strictBounds: true
+          });
+        }
+        console.log(autocomplete);
       });
     }
   }, {
     key: 'getRoute',
-    value: function getRoute(place, infowindow2) {
+    value: function getRoute(place, infoWindow2) {
       var _this3 = this;
 
       this.directionsService.route({
@@ -21547,38 +21359,222 @@ var Main = function (_React$Component) {
           }
           var startLatlng = 0,
               endLatlng = 0,
-              _distance = 0;
+              distance = 0;
           for (var j = 0; j < response.routes[0].legs[0].steps.length; j++) {
-            if (response.routes[0].legs[0].steps[j].distance.value > _distance) {
-              _distance = response.routes[0].legs[0].steps[j].distance.value;
+            if (response.routes[0].legs[0].steps[j].distance.value > distance) {
+              distance = response.routes[0].legs[0].steps[j].distance.value;
               startLatlng = [response.routes[0].legs[0].steps[j].start_point.lat(), response.routes[0].legs[0].steps[j].start_point.lng()];
               endLatlng = [response.routes[0].legs[0].steps[j].end_point.lat(), response.routes[0].legs[0].steps[j].end_point.lng()];
             }
           }
           var inBetween = google.maps.geometry.spherical.interpolate(new google.maps.LatLng(startLatlng[0], startLatlng[1]), new google.maps.LatLng(endLatlng[0], endLatlng[1]), 0.5);
-          infowindow2.setPosition(inBetween);
-          infowindow2.setContent(response.routes[0].legs[0].distance.text + '<br>' + response.routes[0].legs[0].duration.text + ' ');
-          infowindow2.open(map);
+          infoWindow2.setPosition(inBetween);
+          infoWindow2.setContent(response.routes[0].legs[0].distance.text + '<br>' + response.routes[0].legs[0].duration.text + ' ');
+          infoWindow2.open(map);
         } else {
           window.alert('Directions request failed due to ' + status);
         }
       });
     }
   }, {
-    key: 'dropMarker',
-    value: function dropMarker(i) {
+    key: 'getDistance',
+    value: function getDistance(result, i) {
+      var service = new google.maps.DistanceMatrixService();
+      var date = new Date();
+      var DrivingOptions = {
+        departureTime: date,
+        trafficModel: 'pessimistic'
+      };
+      var responseData = function responseData(responseDis, status) {
+        if (status !== google.maps.DistanceMatrixStatus.OK || status != 'OK') {
+          console.log('Error:', status);
+        } else {
+          var time = responseDis.rows[0].elements[0].duration.text;
+          var distance = (parseFloat(responseDis.rows[0].elements[0].distance.text.split(' ')[0]) / 1.6).toFixed(1) + ' mile';
+          document.getElementById('iw-time' + i).innerHTML = time;
+          document.getElementById('iw-distance' + i).innerHTML = distance;
+        }
+      };
+      if (pos) {
+        service.getDistanceMatrix({
+          origins: [pos],
+          destinations: [new google.maps.LatLng(result.geometry.location.lat(), result.geometry.location.lng())],
+          travelMode: 'BICYCLING',
+          drivingOptions: DrivingOptions,
+          unitSystem: google.maps.UnitSystem.Imperical,
+          // duration_in_traffic: true,
+          avoidHighways: false,
+          avoidTolls: false
+        }, responseData);
+      }
+    }
+  }, {
+    key: 'manualSearch',
+    value: function manualSearch(infoWindow, infoWindow2, input, marker) {
       var _this4 = this;
 
+      infoWindow2.close();
+      this.directionsDisplay.setDirections({ routes: [] });
+      this.directionsDisplay.setMap(map);
+      var request = {
+        location: map.center,
+        radius: '500',
+        query: input.value,
+        keyword: input.value,
+        bounds: map.getBounds()
+      };
+      this.service = new google.maps.places.PlacesService(map);
+      var callback = function callback(results, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          _this4.clearResults();
+          _this4.clearMarkers();
+          var markers = [];
+          marker.setVisible(false);
+          // Create a marker for each establishment found, and
+          // assign a letter of the alphabetic to each marker icon.
+
+          var _loop = function _loop(_i) {
+            var markerLetter = String.fromCharCode('A'.charCodeAt(0) + _i % 26);
+            var markerIcon = _this4.state.MARKER_PATH + markerLetter + '.png';
+            var infowindow = new google.maps.InfoWindow({
+              content: ''
+            });
+            markers[_i] = new google.maps.Marker({
+              position: results[_i].geometry.location,
+              animation: google.maps.Animation.DROP,
+              icon: markerIcon
+            });
+            var oneMarker = markers[_i];
+            if (oneMarker) {
+              var listing = document.getElementById('listing');
+              listing.style.padding = '1em 0 1em 1em';
+              listing.style.border = '0.1em solid #626962';
+              listing.style.boxShadow = 'inset 0 0 0 0.1em #272727';
+              listing.style.width = '40em';
+              listing.style.background = 'rgba(255, 255, 255, 0.7)';
+            }
+            // If the user clicks an establishment marker, show the details of that place
+            // in an info window.
+            google.maps.event.addListener(oneMarker, 'click', function () {
+              _this4.markerClick(infoWindow, infoWindow2, oneMarker);
+              if (pos) {
+                _this4.getRoute(results[_i], infoWindow2);
+              }
+            });
+
+            markers[_i].placeResult = results[_i];
+            var results1 = document.getElementById('results');
+            markerLetter = String.fromCharCode('A'.charCodeAt(0) + _i % 26);
+            markerIcon = _this4.state.MARKER_PATH + markerLetter + '.png';
+            var tr = document.createElement('tr');
+
+            // If the user clicks an establishment marker, show the details of that place
+            // in an info window.
+            tr.onclick = function () {
+              _this4.markerClick(infoWindow, infoWindow2, oneMarker);
+              if (pos) {
+                _this4.getRoute(results[_i], infoWindow2);
+              }
+            };
+
+            var iconTd = document.createElement('td');
+            var nameTd = document.createElement('td');
+            var icon = document.createElement('img');
+            var addressTd = document.createElement('td');
+            var ratingTd = document.createElement('td');
+            var distanceTd = document.createElement('td');
+            var timeTd = document.createElement('td');
+            var distance = document.createTextNode('');
+            var time = document.createTextNode('');
+            var name = document.createTextNode(results[_i].name);
+
+            icon.src = markerIcon;
+            icon.setAttribute('class', 'placeIcon');
+            icon.setAttribute('className', 'placeIcon');
+            ratingTd.setAttribute('id', 'iw-rating' + _i);
+            timeTd.setAttribute('id', 'iw-time' + _i);
+            distanceTd.setAttribute('id', 'iw-distance' + _i);
+            var address = '';
+            if (results[_i].vicinity) {
+              address = document.createTextNode(results[_i].vicinity.split(',')[0]);
+            }
+            iconTd.appendChild(icon);
+            nameTd.appendChild(name);
+            addressTd.appendChild(address);
+            distanceTd.appendChild(distance);
+            timeTd.appendChild(time);
+            tr.appendChild(iconTd);
+            tr.appendChild(nameTd);
+            tr.appendChild(addressTd);
+            tr.appendChild(ratingTd);
+            tr.appendChild(distanceTd);
+            tr.appendChild(timeTd);
+            results1.appendChild(tr);
+            if (results[_i].rating) {
+              var ratingHtml = '';
+              for (var j = 0; j < 5; j++) {
+                if (results[_i].rating < j + 0.5) {
+                  ratingHtml += '&#10025;';
+                } else {
+                  ratingHtml += '&#10029;';
+                }
+                document.getElementById('iw-rating' + _i).innerHTML = ratingHtml;
+              }
+            }
+            _this4.getDistance(results[_i], _i);
+          };
+
+          for (var _i = 0; _i < results.length; _i++) {
+            _loop(_i);
+          }
+          _this4.setState({ markers: markers });
+          // Use marker animation to drop the icons incrementally on the map.
+          for (var _i2 = 0; _i2 < results.length; _i2++) {
+            setTimeout(_this4.dropMarker(_i2), _i2 * 100);
+          }
+        }
+      };
+      this.service.nearbySearch(request, callback);
+    }
+  }, {
+    key: 'markerClick',
+    value: function markerClick(infoWindow, infoWindow2, oneMarker) {
+      infoWindow.close();
+      var infoCont = document.getElementById('infoContent') || this.state.infoCont;
+      infoWindow.setContent(infoCont);
+      infoCont.children['place-icon'].src = oneMarker.placeResult.icon || results[i].icon;
+      infoCont.children['place-name'].textContent = oneMarker.placeResult.name || results[i].name;
+      var address = '';
+      if (oneMarker.placeResult.vicinity) {
+        address = [oneMarker.placeResult.vicinity.split(',')[0] || ''].join(' ');
+      } else if (results[i].vicinity) {
+        address = [results[i].vicinity.split(',')[0] || ''].join(' ');
+      }
+      infoCont.children['place-address'].textContent = address;
+      infoWindow.open(map, oneMarker);
+      google.maps.event.addListenerOnce(map, 'bounds_changed', function (event) {
+        if (map.getZoom() > 15) {
+          map.setZoom(15);
+          map.setCenter(infoWindow2.getPosition());
+          map.panBy(0, -200);
+        }
+      });
+    }
+  }, {
+    key: 'dropMarker',
+    value: function dropMarker(i) {
+      var _this5 = this;
+
       return function () {
-        _this4.state.markers[i].setMap(map);
+        _this5.state.markers[i].setMap(map);
       };
     }
   }, {
     key: 'clearMarkers',
     value: function clearMarkers() {
-      for (var i = 0; i < this.state.markers.length; i++) {
-        if (this.state.markers[i]) {
-          this.state.markers[i].setMap(null);
+      for (var _i3 = 0; _i3 < this.state.markers.length; _i3++) {
+        if (this.state.markers[_i3]) {
+          this.state.markers[_i3].setMap(null);
         }
       }
       this.state.markers = [];
