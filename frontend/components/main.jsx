@@ -7,11 +7,14 @@ class Main extends React.Component {
       markers: [],
       MARKER_PATH: 'https://developers.google.com/maps/documentation/javascript/images/marker_green',
       hostnameRegexp: new RegExp('^https?://.+?/'),
+      directionsService: '',
+      directionsDisplay: '',
     };
 
     this.dropMarker = this.dropMarker.bind(this);
     this.clearMarkers = this.clearMarkers.bind(this);
     this.clearResults = this.clearResults.bind(this);
+    this.getRoute = this.getRoute.bind(this);
   }
 
   componentDidMount() {
@@ -33,8 +36,9 @@ class Main extends React.Component {
       map,
       anchorPoint: new google.maps.Point(0, -29),
     });
-    const directionsService = new google.maps.DirectionsService();
-    const directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+
+    this.directionsService = new google.maps.DirectionsService();
+    this.directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
     const infowindow2 = new google.maps.InfoWindow();
 
     autocomplete.addListener('place_changed', () => {
@@ -44,8 +48,8 @@ class Main extends React.Component {
         // User entered the name of a Place that was not suggested and
         // pressed the Enter key, or the Place Details request failed.
         infowindow2.close();
-        directionsDisplay.setDirections({ routes: [] });
-        directionsDisplay.setMap(map);
+        this.directionsDisplay.setDirections({ routes: [] });
+        this.directionsDisplay.setMap(map);
         const request = {
           location: map.center,
           radius: '500',
@@ -55,7 +59,7 @@ class Main extends React.Component {
         };
         this.service = new google.maps.places.PlacesService(map);
         const callback = (results, status) => {
-          if (status == google.maps.places.PlacesServiceStatus.OK) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
             this.clearResults();
             this.clearMarkers();
             const markers = [];
@@ -99,50 +103,9 @@ class Main extends React.Component {
                 }
                 infoCont.children['place-address'].textContent = address;
 
-                directionsService.route(
-                  {
-                    origin: pos,
-                    destination: new google.maps.LatLng(
-                      marker.placeResult.geometry.location.lat(),
-                      marker.placeResult.geometry.location.lng(),
-                    ),
-                    travelMode: 'BICYCLING',
-                  },
-                  (response, status) => {
-                    if (status === 'OK') {
-                      directionsDisplay.setDirections(response);
-                      if (response.routes[0].legs[0].steps.length === 0) {
-                        return;
-                      }
-                      let startLatlng = 0,
-                        endLatlng = 0,
-                        distance = 0;
-                      for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
-                        if (response.routes[0].legs[0].steps[j].distance.value > distance) {
-                          distance = response.routes[0].legs[0].steps[j].distance.value;
-                          startLatlng = [
-                            response.routes[0].legs[0].steps[j].start_point.lat(),
-                            response.routes[0].legs[0].steps[j].start_point.lng(),
-                          ];
-                          endLatlng = [
-                            response.routes[0].legs[0].steps[j].end_point.lat(),
-                            response.routes[0].legs[0].steps[j].end_point.lng(),
-                          ];
-                        }
-                      }
-                      const inBetween = google.maps.geometry.spherical.interpolate(
-                        new google.maps.LatLng(startLatlng[0], startLatlng[1]),
-                        new google.maps.LatLng(endLatlng[0], endLatlng[1]),
-                        0.5,
-                      );
-                      infowindow2.setPosition(inBetween);
-                      infowindow2.setContent(`${response.routes[0].legs[0].distance.text}<br>${response.routes[0].legs[0].duration.text} `,);
-                      infowindow2.open(map);
-                    } else {
-                      window.alert(`Directions request failed due to ${status}`);
-                    }
-                  },
-                );
+                if (pos) {
+                  this.getRoute(results[i], infowindow2);
+                }
                 infoWindow.open(map, marker);
                 google.maps.event.addListenerOnce(map, 'bounds_changed', (event) => {
                   if (map.getZoom() > 15) {
@@ -177,50 +140,7 @@ class Main extends React.Component {
                 infoCont.children['place-address'].textContent = address;
 
                 if (pos) {
-                  directionsService.route(
-                    {
-                      origin: pos,
-                      destination: new google.maps.LatLng(
-                        marker.placeResult.geometry.location.lat(),
-                        marker.placeResult.geometry.location.lng(),
-                      ),
-                      travelMode: 'BICYCLING',
-                    },
-                    (response, status) => {
-                      if (status === 'OK') {
-                        directionsDisplay.setDirections(response);
-                        if (response.routes[0].legs[0].steps.length === 0) {
-                          return;
-                        }
-                        let startLatlng = 0,
-                          endLatlng = 0,
-                          distance = 0;
-                        for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
-                          if (response.routes[0].legs[0].steps[j].distance.value > distance) {
-                            distance = response.routes[0].legs[0].steps[j].distance.value;
-                            startLatlng = [
-                              response.routes[0].legs[0].steps[j].start_point.lat(),
-                              response.routes[0].legs[0].steps[j].start_point.lng(),
-                            ];
-                            endLatlng = [
-                              response.routes[0].legs[0].steps[j].end_point.lat(),
-                              response.routes[0].legs[0].steps[j].end_point.lng(),
-                            ];
-                          }
-                        }
-                        const inBetween = google.maps.geometry.spherical.interpolate(
-                          new google.maps.LatLng(startLatlng[0], startLatlng[1]),
-                          new google.maps.LatLng(endLatlng[0], endLatlng[1]),
-                          0.5,
-                        );
-                        infowindow2.setPosition(inBetween);
-                        infowindow2.setContent(`${response.routes[0].legs[0].distance.text}<br>${response.routes[0].legs[0].duration.text} `,);
-                        infowindow2.open(map);
-                      } else {
-                        window.alert(`Directions request failed due to ${status}`);
-                      }
-                    },
-                  );
+                  this.getRoute(results[i], infowindow2);
                 }
                 infoWindow.open(map, marker);
                 google.maps.event.addListenerOnce(map, 'bounds_changed', (event) => {
@@ -353,48 +273,7 @@ class Main extends React.Component {
       infoCont.children['place-name'].textContent = place.name;
       infoCont.children['place-address'].textContent = address;
       if (pos) {
-        directionsService.route(
-          {
-            origin: pos,
-            destination: new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng()),
-            travelMode: 'BICYCLING',
-          },
-          (response, status) => {
-            if (status === 'OK') {
-              directionsDisplay.setMap(map);
-              directionsDisplay.setDirections(response);
-              if (response.routes[0].legs[0].steps.length === 0) {
-                return;
-              }
-              let startLatlng = 0,
-                endLatlng = 0,
-                distance = 0;
-              for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
-                if (response.routes[0].legs[0].steps[j].distance.value > distance) {
-                  distance = response.routes[0].legs[0].steps[j].distance.value;
-                  startLatlng = [
-                    response.routes[0].legs[0].steps[j].start_point.lat(),
-                    response.routes[0].legs[0].steps[j].start_point.lng(),
-                  ];
-                  endLatlng = [
-                    response.routes[0].legs[0].steps[j].end_point.lat(),
-                    response.routes[0].legs[0].steps[j].end_point.lng(),
-                  ];
-                }
-              }
-              const inBetween = google.maps.geometry.spherical.interpolate(
-                new google.maps.LatLng(startLatlng[0], startLatlng[1]),
-                new google.maps.LatLng(endLatlng[0], endLatlng[1]),
-                0.5,
-              );
-              infowindow2.setPosition(inBetween);
-              infowindow2.setContent(`${response.routes[0].legs[0].distance.text}<br>${response.routes[0].legs[0].duration.text} `,);
-              infowindow2.open(map);
-            } else {
-              window.alert(`Directions request failed due to ${status}`);
-            }
-          },
-        );
+        this.getRoute(place, infowindow2);
       }
 
       infoWindow.open(map, marker);
@@ -434,6 +313,55 @@ class Main extends React.Component {
     while (results.childNodes[0]) {
       results.removeChild(results.childNodes[0]);
     }
+  }
+
+  getRoute(place, infowindow2) {
+    // console.log(place);
+    // const directionsService = new google.maps.DirectionsService();
+    // const directionsDisplay = new google.maps.DirectionsRenderer({ suppressMarkers: true });
+
+    this.directionsService.route(
+      {
+        origin: pos,
+        destination: new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng()),
+        travelMode: 'BICYCLING',
+      },
+      (response, status) => {
+        if (status === 'OK') {
+          this.directionsDisplay.setMap(map);
+          this.directionsDisplay.setDirections(response);
+          if (response.routes[0].legs[0].steps.length === 0) {
+            return;
+          }
+          let startLatlng = 0,
+            endLatlng = 0,
+            distance = 0;
+          for (let j = 0; j < response.routes[0].legs[0].steps.length; j++) {
+            if (response.routes[0].legs[0].steps[j].distance.value > distance) {
+              distance = response.routes[0].legs[0].steps[j].distance.value;
+              startLatlng = [
+                response.routes[0].legs[0].steps[j].start_point.lat(),
+                response.routes[0].legs[0].steps[j].start_point.lng(),
+              ];
+              endLatlng = [
+                response.routes[0].legs[0].steps[j].end_point.lat(),
+                response.routes[0].legs[0].steps[j].end_point.lng(),
+              ];
+            }
+          }
+          const inBetween = google.maps.geometry.spherical.interpolate(
+            new google.maps.LatLng(startLatlng[0], startLatlng[1]),
+            new google.maps.LatLng(endLatlng[0], endLatlng[1]),
+            0.5,
+          );
+          infowindow2.setPosition(inBetween);
+          infowindow2.setContent(`${response.routes[0].legs[0].distance.text}<br>${response.routes[0].legs[0].duration.text} `,);
+          infowindow2.open(map);
+        } else {
+          window.alert(`Directions request failed due to ${status}`);
+        }
+      },
+    );
   }
 
   render() {
