@@ -21445,7 +21445,7 @@ var Main = function (_React$Component) {
             var oneMarker = markers[_i];
             if (oneMarker) {
               var listing = document.getElementById('listing');
-              listing.style.padding = '1em 0 1em 1em';
+              listing.style.padding = '1em 0.5em 1em 1em';
               listing.style.border = '0.1em solid #626962';
               listing.style.boxShadow = 'inset 0 0 0 0.1em #272727';
               listing.style.width = '40em';
