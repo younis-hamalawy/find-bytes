@@ -21305,9 +21305,6 @@ var Main = function (_React$Component) {
           listing.style.boxShadow = 'none';
           listing.style.width = '42em';
           listing.style.background = 'transparent';
-          map.setZoom(15);
-          map.setCenter(infoWindow2.getPosition());
-          map.panBy(0, -200);
         }
 
         marker.setPosition(place.geometry.location);
